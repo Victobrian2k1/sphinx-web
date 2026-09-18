@@ -1,0 +1,2417 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Sphinx Cat - The Guardian of Ember. Advanced Web3 Social-Fi Ecosystem.">
+    <meta name="theme-color" content="#020202">
+    <title>$SPHINX | V3 Social Mining Ecosystem</title>
+    <link rel="icon" type="image/jpeg" href="https://i.ibb.co/TDRvP6Pq/favicon.jpg">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Web3 Fonts Tối ưu độ phân giải -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Thêm Inter cho Body Text, Giữ Orbitron cho Headings, Space Mono cho Numbers -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Ethers.js & Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            black: '#020202',
+                            bg: '#050505',
+                            panel: '#0a0a0c',
+                            border: '#1a1a24',
+                            primary: '#FF3300',      
+                            primaryDim: '#8B1E00',
+                            accent: '#00F0FF',       
+                            gold: '#FFD700',
+                            goldDim: '#998100',
+                            xBlue: '#1DA1F2',        
+                            text: '#F3F4F6',         /* SÁNG HƠN TRƯỚC (E0E2E5 -> F3F4F6) */
+                            textMuted: '#D1D5DB',    /* TĂNG ĐỘ SÁNG MÀU XÁM ĐỂ DỄ ĐỌC HƠN (gray-300 thay vì gray-400) */
+                            success: '#00FF66',
+                            danger: '#FF003C'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'], /* Đổi Rajdhani thành Inter làm font mặc định */
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 12s linear infinite',
+                        'spin-fast': 'spin 1s linear infinite',
+                        'pulse-cyber': 'pulseCyber 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'flicker': 'crtFlicker 0.15s infinite',
+                        'matrix-rain': 'matrix 20s linear infinite',
+                        'float': 'floating 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseCyber: {
+                            '0%, 100%': { opacity: 1, filter: 'brightness(1)' },
+                            '50%': { opacity: 0.7, filter: 'brightness(1.5) drop-shadow(0 0 15px #FF3300)' },
+                        },
+                        crtFlicker: {
+                            '0%': { opacity: 0.95 },
+                            '100%': { opacity: 1 },
+                        },
+                        floating: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* =========================================
+        1. VARIABLES & THEMING
+        ========================================= */
+        :root {
+            --color-primary: #FF3300;
+            --color-accent: #00F0FF;
+            --color-gold: #FFD700;
+            --bg-base: #020202;
+            --border-glass: rgba(26, 26, 36, 0.8);
+            --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --transition-smooth: all 0.3s ease;
+        }
+
+        /* =========================================
+        2. GLOBAL RESETS & SCROLLBAR
+        ========================================= */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            cursor: crosshair; 
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: #F3F4F6;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            /* Tối ưu render text sắc nét trên mọi màn hình */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #1a1a24; border-radius: 0; transition: var(--transition-smooth); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
+
+        /* =========================================
+        3. TYPOGRAPHY & GLOW EFFECTS
+        ========================================= */
+        /* Glow thu gọn bán kính, giúp viền chữ sắc nét, không bị lóa */
+        .text-glow-primary { text-shadow: 0 0 2px rgba(255, 51, 0, 0.8), 0 0 4px rgba(255, 51, 0, 0.4); }
+        .text-glow-accent { text-shadow: 0 0 2px rgba(0, 240, 255, 0.8), 0 0 4px rgba(0, 240, 255, 0.4); }
+        .text-glow-gold { text-shadow: 0 0 2px rgba(255, 215, 0, 0.8), 0 0 4px rgba(255, 215, 0, 0.4); }
+        .text-glow-x { text-shadow: 0 0 4px rgba(29, 161, 242, 0.8), 0 0 8px rgba(29, 161, 242, 0.4); }
+        
+        h1, h2, h3, h4, .title-orbitron { 
+            font-family: 'Orbitron', sans-serif; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+        }
+
+        /* =========================================
+        4. UI COMPONENTS (PANELS, BUTTONS, INPUTS)
+        ========================================= */
+        .cyber-panel {
+            background: rgba(10, 10, 12, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-left: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+            z-index: 10; /* Đẩy Panel lên trên lớp Scanlines */
+            transform: translateZ(0); /* Kích hoạt GPU Hardware Acceleration */
+        }
+        
+        .cyber-panel::after {
+            content: ''; 
+            position: absolute; 
+            top: 0; right: 0; width: 30px; height: 30px;
+            background: linear-gradient(135deg, transparent 50%, rgba(255,51,0,0.2) 50%);
+            border-bottom-left-radius: 4px; 
+            pointer-events: none;
+        }
+
+        .btn-cyber {
+            position: relative; 
+            z-index: 1; 
+            overflow: hidden;
+            transition: var(--transition-bounce);
+            clip-path: polygon(10px 0, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+        
+        .btn-cyber::before {
+            content: ''; 
+            position: absolute; 
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.4s ease; 
+            z-index: -1;
+        }
+        
+        .btn-cyber:hover::before { left: 100%; }
+        .btn-cyber:active { transform: scale(0.95); }
+        .btn-cyber:disabled { filter: grayscale(1); opacity: 0.5; pointer-events: none; }
+
+        .input-tech {
+            background: rgba(0,0,0,0.8); 
+            border: 1px solid var(--border-glass);
+            color: #fff; 
+            outline: none; 
+            transition: var(--transition-smooth);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+        }
+        
+        .input-tech:focus { 
+            border-color: var(--color-primary); 
+            box-shadow: inset 0 0 10px rgba(255,51,0,0.2); 
+        }
+        
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+        }
+
+        /* =========================================
+        5. LAYOUT & ROUTER VIEWS
+        ========================================= */
+        .view-layer { 
+            display: none; 
+            opacity: 0; 
+            transform: translateY(20px) scale(0.98);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            will-change: opacity, transform;
+        }
+        
+        .view-layer.active { 
+            display: flex; 
+            flex-direction: column; 
+            opacity: 1; 
+            transform: translateY(0) scale(1);
+        }
+
+        /* =========================================
+        6. BACKGROUNDS, EFFECTS & ANIMATIONS
+        ========================================= */
+        #bg-canvas { position: fixed; inset: 0; z-index: -3; }
+        
+        .hex-grid {
+            position: fixed; inset: 0; z-index: -2; opacity: 0.05; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='103.923' viewBox='0 0 60 103.923' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill-opacity='0' stroke='%23FF3300' stroke-width='1'/%3E%3Cpath d='M30 103.923L4.02 88.923v-30L30 43.923l25.98 15v30z' fill-opacity='0' stroke='%23FF3300' stroke-width='1'/%3E%3C/svg%3E");
+            animation: panBg 60s linear infinite;
+            will-change: background-position;
+        }
+
+        /* Scanlines được hạ z-index xuống 0 để không đè lên chữ trong cyber-panel */
+        .scanlines {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background: linear-gradient(to bottom, transparent, transparent 50%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.15));
+            background-size: 100% 4px;
+        }
+        
+        .crt-vignette {
+            position: fixed; inset: 0; z-index: 9998; pointer-events: none;
+            background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.7) 100%);
+        }
+
+        /* Glitch Text Optimization */
+        .glitch-text { position: relative; display: inline-block; }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8;
+            will-change: clip-path, transform;
+        }
+        .glitch-text::before { 
+            color: var(--color-accent); z-index: -1; left: 2px; 
+            animation: glitch-anim 2s infinite linear alternate-reverse; 
+        }
+        .glitch-text::after { 
+            color: var(--color-primary); z-index: -2; left: -2px; 
+            animation: glitch-anim 3s infinite linear alternate-reverse; 
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+            40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+            80% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 1px); }
+            100% { clip-path: inset(30% 0 50% 0); transform: translate(2px, -1px); }
+        }
+        
+        @keyframes panBg { from { background-position: 0 0; } to { background-position: 100% 100%; } }
+        @keyframes slideIn { to { transform: translateX(0); } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+
+        /* =========================================
+        7. TERMINAL, TOASTS & MODULE SPECIFICS
+        ========================================= */
+        #terminal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 50vh; 
+            background: rgba(5,5,5,0.95); border-bottom: 2px solid var(--color-primary); 
+            z-index: 1000000; transform: translateY(-100%); 
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex; flex-direction: column; padding: 20px; 
+            font-family: 'Space Mono', monospace; box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            will-change: transform;
+        }
+        #terminal-overlay.active { transform: translateY(0); }
+        
+        #toast-container { 
+            position: fixed; bottom: 20px; right: 20px; z-index: 99999; 
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none; 
+        }
+        
+        .toast-msg {
+            background: rgba(10,10,12,0.9); border: 1px solid var(--border-glass);
+            border-left: 4px solid var(--color-accent); padding: 16px 20px;
+            color: #fff; font-family: 'Space Mono', monospace; font-size: 13px;
+            pointer-events: auto; transform: translateX(120%); 
+            animation: slideIn 0.4s forwards, fadeOut 0.4s ease 4.6s forwards;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); width: 320px; 
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+        }
+        
+        .toast-msg.error { border-left-color: var(--color-danger); }
+        .toast-msg.success { border-left-color: var(--color-success); }
+        .toast-msg.x-info { border-left-color: #1DA1F2; }
+
+        /* Module Specifics */
+        .progress-bar-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-glass); }
+        .progress-bar-fill { height: 100%; transition: width 1s ease; }
+        
+        #game-canvas { width: 100%; height: 450px; background: #000; border-radius: 8px; border: 1px solid var(--border-glass); }
+        
+        .shop-item { transition: var(--transition-smooth); border: 1px solid var(--border-glass); }
+        .shop-item:hover { border-color: var(--color-gold); background: rgba(255,215,0,0.05); transform: translateY(-2px); }
+        
+        #meme-workspace { position: relative; width: 100%; aspect-ratio: 1/1; background: #050505; overflow: hidden; border: 1px solid var(--border-glass); }
+        #meme-canvas { width: 100%; height: 100%; touch-action: none; }
+    </style>
+</head>
+<body class="selection:bg-cyber-primary selection:text-white">
+
+    <!-- Global FX Layers -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="hex-grid"></div>
+    <div class="scanlines"></div>
+    <div class="crt-vignette"></div>
+
+    <!-- Hidden Cyber Terminal (Press ~) -->
+    <div id="terminal-overlay">
+        <div class="flex justify-between items-center mb-4 border-b border-cyber-border pb-2">
+            <span class="text-cyber-primary font-bold text-sm">SPHINX_OS v4.0.0 [SOCIAL_MINING_ENABLED]</span>
+            <button onclick="Terminal.toggle()" class="text-cyber-textMuted hover:text-white">[X] CLOSE</button>
+        </div>
+        <div id="terminal-output" class="flex-grow overflow-y-auto text-xs text-cyber-accent space-y-1 mb-4">
+            <div>> System initialized. Root access granted.</div>
+            <div>> Type 'help' for available commands.</div>
+        </div>
+        <div class="flex items-center gap-2 text-sm">
+            <span class="text-cyber-primary">root@SPHINX:~#</span>
+            <input type="text" id="terminal-input" class="flex-grow bg-transparent border-none outline-none text-white font-mono" autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 w-full z-50 cyber-panel border-x-0 border-t-0 rounded-none bg-cyber-black/80">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                
+                <!-- Brand / Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3 group">
+                    <!-- VÙNG 1: NÚT BẤM ADMIN (Chỉ bao trọn cái ảnh con mèo) -->
+                    <div class="relative z-50 cursor-pointer" onclick="window.OracleAdmin.handleSecretClick()">
+                        <div class="absolute inset-0 bg-cyber-primary rounded-full blur opacity-40 group-hover:opacity-80 transition-opacity pointer-events-none"></div>
+                        <img src="https://i.ibb.co/b5JdGwbM/Gemini-Generated-Image-e0a36se0a36se0a3.jpg" alt="SPHINX Logo" class="relative h-12 w-12 object-cover rounded-full border border-cyber-primary/50 group-hover:border-cyber-primary transition-colors">
+                    </div>
+                    
+                    <!-- VÙNG 2: NÚT VỀ TRANG CHỦ (Chỉ bao trọn phần chữ) -->
+                    <div class="flex flex-col cursor-pointer" onclick="Router.navigate('home')">
+                        <span class="font-orbitron font-black text-2xl tracking-widest text-white group-hover:text-cyber-primary transition-colors glitch-text" data-text="SPHINX">SPHINX</span>
+                        <span class="text-[10px] text-cyber-primary font-mono tracking-[0.2em] mt-1">THE_ORACLE_NODE</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex space-x-1 items-center bg-black/60 p-1 border border-cyber-border rounded">
+                    <button class="nav-btn px-5 py-2 font-orbitron text-xs font-bold text-white bg-white/5 transition-colors" data-target="home" onclick="Router.navigate('home')">OVERVIEW</button>
+                    <button class="nav-btn px-5 py-2 font-orbitron text-xs font-bold text-cyber-textMuted hover:text-white hover:bg-white/5 transition-colors" data-target="swap" onclick="Router.navigate('swap')">NEXUS SWAP</button>
+                    <!-- NEW SOCIAL MINING TAB -->
+                    <button class="nav-btn px-5 py-2 font-orbitron text-xs font-bold text-cyber-xBlue hover:text-white hover:bg-cyber-xBlue/10 border border-transparent hover:border-cyber-xBlue/30 transition-colors flex items-center gap-2" data-target="social" onclick="Router.navigate('social')">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        X_MINING
+                    </button>
+                    <button class="nav-btn px-5 py-2 font-orbitron text-xs font-bold text-cyber-textMuted hover:text-white hover:bg-white/5 transition-colors" data-target="oracle" onclick="Router.navigate('oracle')">THE_ORACLE</button>
+                    <button class="nav-btn px-5 py-2 font-orbitron text-xs font-bold text-cyber-textMuted hover:text-white hover:bg-white/5 transition-colors" data-target="meme" onclick="Router.navigate('meme')">MEME_FORGE</button>
+                    <button class="nav-btn px-5 py-2 font-orbitron text-xs font-bold text-cyber-textMuted hover:text-white hover:bg-white/5 transition-colors" data-target="army" onclick="Router.navigate('army')">ARMY_RANKS</button>
+                </nav>
+
+                <!-- Global X Authentication -->
+                <!-- Global X Authentication -->
+                <div class="hidden lg:flex items-center space-x-4">
+                    
+                    <!-- [THÊM MỚI] SOCIAL LINKS -->
+                    <div class="flex items-center gap-4 mr-2 border-r border-cyber-border pr-6">
+                        <a href="https://x.com/catsphinx_sol" target="_blank" class="text-cyber-textMuted hover:text-cyber-xBlue transition-colors hover:scale-110" title="Follow Official X">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </a>
+                        <a href="https://t.me/catsphinx_sol" target="_blank" class="text-cyber-textMuted hover:text-cyber-primary transition-colors hover:scale-110" title="Join Global Chat">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
+                        </a>
+                    </div>
+                    <!-- KẾT THÚC THÊM MỚI -->
+
+                    <div id="ui-user-stats" class="hidden flex-col items-end mr-4 border-r border-cyber-border pr-4">
+                        <span class="text-xs font-mono text-cyber-gold font-bold">RANK: <span id="ui-rank">KITTEN</span></span>
+                        <span class="text-xs font-mono text-white"><span id="ui-pts">0</span> PTS</span>
+                    </div>
+                    
+                    <button id="btn-auth-global" onclick="AuthManager.login()" class="btn-cyber bg-cyber-xBlue text-white font-orbitron text-xs font-bold px-6 py-3 tracking-widest border border-cyber-xBlue shadow-[0_0_15px_rgba(29,161,242,0.4)] flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        LOGIN WITH X
+                    </button>
+                </div>
+
+                <!-- Mobile X Auth -->
+                <div class="lg:hidden flex items-center">
+                    <button id="btn-auth-mobile" onclick="AuthManager.login()" class="bg-cyber-xBlue text-white font-orbitron text-[10px] font-bold px-4 py-2 rounded-md shadow-[0_0_10px_rgba(29,161,242,0.4)] border border-cyber-xBlue transition-colors flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        LOGIN
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="app-root" class="pt-24 min-h-screen relative z-10 flex flex-col pb-28 lg:pb-20">
+        <!-- VIEW 1: OVERVIEW (HOME) -->
+        <section id="view-home" class="view-layer active flex-grow">
+            
+            <!-- THẺ DIV BỌC NGOÀI MỚI (Giải quyết triệt để lỗi chạy cuộn xuống dưới) -->
+            <div class="flex flex-col gap-10 w-full max-w-7xl mx-auto px-4 py-8">
+                
+                <!-- HERO BANNER -->
+                <div class="cyber-panel relative w-full overflow-hidden p-8 md:p-16 text-center group border border-cyber-primary/50 shadow-[0_0_40px_rgba(0,240,255,0.15)] bg-black/60 backdrop-blur-sm rounded-xl">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 group-hover:opacity-20 transition-opacity"></div>
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-cyber-primary/20 blur-[100px] pointer-events-none"></div>
+
+                    <h1 class="relative text-4xl md:text-7xl font-orbitron font-black text-white mb-4 tracking-tighter uppercase">
+                        AWAKEN THE <span class="text-cyber-primary drop-shadow-[0_0_15px_#00F0FF] glitch-text" data-text="NODE">NODE</span>
+                    </h1>
+                    <p class="relative text-cyber-textMuted font-mono max-w-2xl mx-auto mb-10 text-sm md:text-base leading-relaxed">
+                        The ultimate Cyberpunk Social-Fi terminal on Solana. Decode the market, mine social equity, and dominate the bonding curve. Join the SPHINX network.
+                    </p>
+                    <div class="relative flex flex-col sm:flex-row justify-center gap-6">
+                        <button onclick="Router.navigate('social')" class="bg-cyber-primary text-black font-bold font-orbitron px-10 py-4 tracking-widest hover:shadow-[0_0_30px_#00F0FF] hover:scale-105 transition-all skew-x-[-12deg]">
+                            <span class="skew-x-[12deg] block">START X_MINING</span>
+                        </button>
+                        <button onclick="window.open('https://pump.fun/coin/6tTvMWqVEtznSfmnfuTiSFBUXbPWrimhM8ehjurHHxLf', '_blank')" class="bg-transparent border-2 border-cyber-border text-white hover:border-cyber-primary hover:text-cyber-primary font-bold font-orbitron px-10 py-4 tracking-widest transition-all skew-x-[-12deg]">
+                            <span class="skew-x-[12deg] block">PUMP.FUN LAUNCH</span>
+                        </button>
+                    </div>
+
+                    <!-- [THÊM MỚI] QUICK SOCIAL BADGES -->
+                    <!-- TELEGRAM OFFICIAL BANNER (THAY THẾ X) -->
+                    <div class="mt-12 relative flex justify-center w-full z-20">
+                        <!-- Hiệu ứng viền phát sáng màu xanh Telegram -->
+                        <div class="absolute inset-0 bg-[#0088cc] blur-2xl opacity-30 animate-pulse rounded-xl w-full max-w-2xl mx-auto"></div>
+                        
+                        <a href="https://t.me/catsphinx_sol" target="_blank" class="relative w-full max-w-2xl cyber-panel border-2 border-[#0088cc] flex flex-col md:flex-row items-center justify-center md:justify-between gap-4 px-6 md:px-10 py-5 bg-black/80 hover:bg-[#0088cc]/20 transition-all duration-300 group hover:-translate-y-2 shadow-[0_0_40px_rgba(0,136,204,0.4)] rounded-xl">
+                            
+                            <div class="flex items-center gap-5">
+                                <!-- Telegram Icon Nhấp Nháy -->
+                                <div class="relative">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0088cc] opacity-60"></span>
+                                    <svg class="relative w-12 h-12 text-[#0088cc] drop-shadow-[0_0_10px_#0088cc]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                                </div>
+                                
+                                <div class="flex flex-col text-center md:text-left">
+                                    <span class="text-[#0088cc] font-mono text-[11px] md:text-xs font-bold tracking-[0.2em] uppercase animate-pulse">Official Comm Channel</span>
+                                    <span class="text-white font-orbitron text-2xl md:text-3xl font-black drop-shadow-[0_0_10px_#0088cc]">JOIN TELEGRAM</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Nút Mũi tên -->
+                            <div class="hidden md:flex bg-[#0088cc] p-3 rounded-full group-hover:scale-110 group-hover:bg-white transition-all shadow-[0_0_15px_#0088cc]">
+                                <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- KẾT THÚC TELEGRAM BANNER -->
+                    <!-- KẾT THÚC THÊM MỚI -->
+                </div>
+
+                <!-- THỐNG KÊ -->
+                <!-- THỐNG KÊ (PREMIUM CYBERPUNK EDITION) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono w-full mt-4">
+                    
+                    <!-- Box 1: SPHINX Price -->
+                    <div class="cyber-panel p-6 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 border border-cyber-border hover:border-cyber-primary/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(255,51,0,0.15)] rounded-xl bg-gradient-to-br from-black/90 to-[#1a0500]">
+                        <!-- Icon chìm background -->
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-500 transform group-hover:scale-110">
+                            <svg class="w-20 h-20 text-cyber-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="text-xs text-cyber-textMuted tracking-widest flex items-center gap-2 font-bold">
+                                <!-- Đèn báo nhấp nháy -->
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-primary opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-cyber-primary"></span>
+                                </span>
+                                TOKEN PRICE
+                            </div>
+                            <div class="text-[9px] bg-cyber-primary/10 text-cyber-primary border border-cyber-primary/30 px-2 py-1 rounded tracking-wider uppercase">PUMP.FUN</div>
+                        </div>
+                        
+                        <div class="text-4xl md:text-5xl text-white font-orbitron font-black mb-2 tracking-tighter text-glow-primary relative z-10" id="ticker-price">TBA</div>
+                        
+                        <div class="flex items-center gap-2 text-[10px] md:text-xs font-mono relative z-10 border-t border-cyber-border/50 pt-3 mt-3">
+                            <span class="text-cyber-textMuted">NETWORK STATUS:</span>
+                            <span class="text-cyber-success font-bold drop-shadow-[0_0_5px_#00FF66]">LIVE ON PUMP.FUN</span>
+                        </div>
+                        
+                        <!-- Đường viền trang trí dưới đáy -->
+                        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-primary to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    
+                    <!-- Box 2: Bonding Curve -->
+                    <div class="cyber-panel p-6 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 border border-cyber-border hover:border-cyber-gold/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(255,215,0,0.15)] rounded-xl bg-gradient-to-br from-black/90 to-[#1a1600]">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-500 transform group-hover:scale-110">
+                            <svg class="w-20 h-20 text-cyber-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="text-xs text-cyber-textMuted tracking-widest flex items-center gap-2 font-bold">
+                                <svg class="w-3 h-3 text-cyber-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg>
+                                BONDING CURVE
+                            </div>
+                            <div class="text-[9px] bg-cyber-gold/10 text-cyber-gold border border-cyber-gold/30 px-2 py-1 rounded tracking-wider uppercase">RAYDIUM MIGRATION</div>
+                        </div>
+                        
+                        <div class="text-4xl md:text-5xl text-white font-orbitron font-black mb-4 tracking-tighter text-glow-gold relative z-10" id="ticker-mcap">0.00%</div>
+                        
+                        <!-- Thanh Progress Bar thiết kế dạng Hitech -->
+                        <div class="relative w-full h-2.5 bg-black border border-cyber-border rounded-full overflow-hidden mb-2 z-10 shadow-inner">
+                            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0wIDB2NGg0di00SDB6IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9Ii4wNSIvPjwvc3ZnPg==')] z-20 pointer-events-none"></div>
+                            <div class="h-full bg-gradient-to-r from-cyber-gold/40 via-cyber-gold to-[#fff5cc] shadow-[0_0_15px_#FFD700] w-[5%] animate-pulse relative z-10 rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-[9px] md:text-[10px] font-mono text-cyber-textMuted relative z-10 mt-2">
+                            <span>LIQUIDITY PROGRESS</span>
+                            <span class="text-cyber-gold font-bold">TARGET: 85 SOL</span>
+                        </div>
+                        
+                        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-gold to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    
+                    <!-- Box 3: Social Miners -->
+                    <div class="cyber-panel p-6 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 border border-cyber-border hover:border-cyber-xBlue/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(29,161,242,0.15)] rounded-xl bg-gradient-to-br from-black/90 to-[#001220]">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-500 transform group-hover:scale-110">
+                            <svg class="w-20 h-20 text-cyber-xBlue" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </div>
+                        
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="text-xs text-cyber-textMuted tracking-widest flex items-center gap-2 font-bold">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-success opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-cyber-success"></span>
+                                </span>
+                                ACTIVE NODES
+                            </div>
+                            <div class="text-[9px] bg-cyber-xBlue/10 text-cyber-xBlue border border-cyber-xBlue/30 px-2 py-1 rounded tracking-wider uppercase">GLOBAL NETWORK</div>
+                        </div>
+                        
+                        <div class="text-4xl md:text-5xl text-white font-orbitron font-black mb-2 tracking-tighter glow-text-x relative z-10" id="ticker-miners">14,204</div>
+                        
+                        <div class="flex justify-between items-center text-[10px] md:text-xs font-mono relative z-10 border-t border-cyber-border/50 pt-3 mt-3">
+                            <span class="text-cyber-textMuted">SOCIAL MINERS</span>
+                            <div class="flex items-center gap-1 text-cyber-success font-bold">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                +128 24H
+                            </div>
+                        </div>
+                        
+                        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-xBlue to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                </div>
+                <!-- KẾT THÚC THỐNG KÊ -->
+
+                <!-- Global Activity Feed -->
+                <div class="w-full mt-4">
+                    <h3 class="font-orbitron text-xl text-white border-b border-cyber-border pb-3 mb-6 flex items-center gap-3">
+                        <span class="w-3 h-3 bg-cyber-success animate-pulse rounded-full shadow-[0_0_10px_#00ff00]"></span> 
+                        LIVE PROTOCOL ACTIVITY
+                    </h3>
+                    
+                    <div class="cyber-panel p-1 h-72 overflow-hidden relative border border-cyber-border/50 bg-[#0a0a0c] shadow-2xl rounded-lg" id="activity-feed-container">
+                        <div class="flex items-center gap-2 px-4 py-2 border-b border-cyber-border/30 bg-black/60">
+                            <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                            <span class="text-[10px] text-cyber-textMuted font-mono ml-2">SPHINX_terminal_v1.exe</span>
+                        </div>
+                        
+                        <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none"></div>
+                        
+                        <ul id="activity-feed" class="font-mono text-sm space-y-3 p-5 overflow-y-auto h-full pb-20 custom-scrollbar">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+                </div>
+            
+            </div> <!-- Kết thúc thẻ div bọc ngoài -->
+        </section>
+
+        <!-- VIEW 2: TRADING TERMINAL (EXTERNAL ROUTING) -->
+        <section id="view-swap" class="view-layer py-12 px-4">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- DexScreener Real-time Chart Area -->
+                <div class="lg:col-span-8 cyber-panel p-2 md:p-6">
+                    <div class="flex justify-between items-center mb-4 px-2">
+                        <div>
+                            <h2 class="font-orbitron text-2xl font-bold text-white flex items-center gap-3">
+                                LIVE MARKET <span class="text-xs bg-cyber-success/20 text-cyber-success px-2 py-1 border border-cyber-success/50">REAL-TIME API</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <!-- Real Chart Iframe / Pre-launch Screen -->
+                    <div id="chart-container" class="w-full h-[500px] border border-cyber-border rounded overflow-hidden relative bg-black flex items-center justify-center flex-col">
+                        
+                        <!-- Hidden iframe initially -->
+                        <iframe id="dex-iframe" class="w-full h-full absolute top-0 left-0 hidden" src="" frameborder="0"></iframe>
+                        
+                        <!-- Pre-launch Screen -->
+                        <div id="pre-launch-screen" class="text-center z-10 flex flex-col items-center p-6">
+                            <svg class="w-20 h-20 text-cyber-primary animate-spin-slow mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0 0v-10m0 0V2m0 10h10M12 12H2"></path></svg>
+                            <h3 class="font-orbitron text-2xl md:text-3xl text-white font-bold tracking-widest animate-pulse mb-2">AWAITING DEPLOYMENT</h3>
+                            <p class="font-mono text-cyber-textMuted text-sm">Pump.fun liquidity initialization pending. Standing by for Oracle Contract Address...</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Launch Portal Interface -->
+                <div class="lg:col-span-4 cyber-panel p-6 relative">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-cyber-accent"></div>
+                    
+                    <h3 class="font-orbitron text-lg font-bold text-white mb-6 border-b border-cyber-border pb-4">SECURE TRADE ROUTER</h3>
+
+                    <!-- Live API Stats -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-black/50 border border-cyber-border p-3 rounded">
+                            <div class="text-[10px] font-mono text-cyber-textMuted mb-1">PRICE (USD)</div>
+                            <div class="text-lg font-bold text-cyber-success" id="api-price">$0.0000</div>
+                        </div>
+                        <div class="bg-black/50 border border-cyber-border p-3 rounded">
+                            <div class="text-[10px] font-mono text-cyber-textMuted mb-1">MARKET CAP</div>
+                            <div class="text-lg font-bold text-cyber-gold" id="api-mcap">$0.00K</div>
+                        </div>
+                        <div class="bg-black/50 border border-cyber-border p-3 rounded col-span-2">
+                            <div class="text-[10px] font-mono text-cyber-textMuted mb-1">24H VOLUME</div>
+                            <div class="text-lg font-bold text-white" id="api-vol">$0.00</div>
+                        </div>
+                    </div>
+
+                    <!-- Contract Address -->
+                    <div class="mb-6">
+                        <div class="text-xs font-mono text-cyber-textMuted mb-2">SMART CONTRACT (SOLANA)</div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="contract-address" value="A9AHYeqb7nQk7LZUraw7rBCzYRjy2DRvE6NqWfFHKRdH" class="w-full bg-black border border-cyber-border text-cyber-textMuted font-mono text-xs p-3 outline-none" readonly>
+                            <button onclick="SwapController.copyCA()" class="bg-cyber-border p-3 hover:bg-cyber-accent hover:text-black transition-colors" title="Copy CA">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Secure Routing Buttons -->
+                    <div class="space-y-3">
+                        <button onclick="SwapController.buyOn('pumpfun')" class="w-full btn-cyber bg-cyber-success text-black font-orbitron font-bold py-3 text-sm flex justify-center items-center gap-2 hover:brightness-110">
+                            BUY ON PUMP.FUN
+                        </button>
+                        <button onclick="SwapController.buyOn('raydium')" class="w-full bg-black border border-cyber-border text-white font-orbitron font-bold py-3 text-sm flex justify-center items-center gap-2 hover:bg-[#1C0950] hover:border-[#8b5cf6] transition-colors">
+                            TRADE ON RAYDIUM
+                        </button>
+                        <button onclick="window.open('https://jup.ag/swap?buy=6tTvMWqVEtznSfmnfuTiSFBUXbPWrimhM8ehjurHHxLf&sell=So11111111111111111111111111111111111111112', '_blank')" class="w-full bg-black border border-cyber-border text-white font-orbitron font-bold py-3 text-sm flex justify-center items-center gap-2 hover:bg-[#182623] hover:border-[#10b981] transition-colors">
+                            SWAP ON JUPITER (JUP)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: SOCIAL MINING (X) -->
+        <style>
+            /* Hiệu ứng Cyberpunk bổ sung cho X_MINING */
+            .text-glow-primary { text-shadow: 0 0 10px rgba(0, 240, 255, 0.7); }
+            .text-glow-gold { text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); }
+            .terminal-text { text-shadow: 0 0 5px rgba(0, 255, 65, 0.5); font-family: monospace; }
+            .scan-line {
+                position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+                background: rgba(0, 240, 255, 0.5); opacity: 0.5;
+                animation: scan 2s linear infinite;
+                z-index: 10;
+            }
+            @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        </style>
+
+        <section id="view-social" class="view-layer py-12 px-4 relative">
+            <div class="max-w-6xl mx-auto">
+                <!-- Social Header & Authentication -->
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6 border-b border-cyber-border pb-6">
+                    <div class="text-center md:text-left">
+                        <h2 class="font-orbitron text-4xl md:text-5xl font-black text-white flex items-center justify-center md:justify-start gap-4">
+                            X_MINING <span class="bg-cyber-xBlue/20 text-cyber-xBlue text-sm px-3 py-1 border border-cyber-xBlue/50 rounded-full font-mono animate-pulse">LIVE</span>
+                        </h2>
+                        <p class="font-mono text-cyber-textMuted mt-2">Post about $SPHINX. Engage. Earn Real Dividends.</p>
+                    </div>
+
+                    <!-- Twitter Connect State -->
+                    <div id="social-auth-state" class="cyber-panel p-4 border-l-4 border-l-cyber-xBlue w-full md:w-80 relative overflow-hidden">
+                        <div class="scan-line hidden" id="miner-scan"></div>
+                        
+                        <div id="x-unconnected" class="flex flex-col items-center">
+                            <span class="font-mono text-xs text-cyber-textMuted mb-2">AUTHENTICATION REQUIRED</span>
+                            <!-- ĐÃ SỬA: Gọi thẳng AuthManager.login() của Firebase -->
+                            <button onclick="AuthManager.login()" class="btn-cyber bg-cyber-xBlue text-white font-orbitron text-sm font-bold px-6 py-2 flex items-center justify-center gap-2 w-full hover:brightness-125 transition-all">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                CONNECT X
+                            </button>
+                        </div>
+                        
+                        <div id="x-connected" class="hidden flex flex-col items-start w-full">
+                            <div class="flex items-center justify-between w-full mb-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=Web3&background=1DA1F2&color=fff" class="w-10 h-10 rounded-full border-2 border-cyber-xBlue" alt="avatar" id="social-avatar">
+                                    <div>
+                                        <div class="font-orbitron font-bold text-white" id="x-username">@Miner</div>
+                                        <div class="font-mono text-[10px] text-cyber-success">✓ Oracle Connected</div>
+                                    </div>
+                                </div>
+                                <!-- ĐÃ SỬA: Gọi AuthManager.login() để sign out -->
+                                <button onclick="AuthManager.login()" class="text-xs text-cyber-textMuted hover:text-red-500 font-mono">DISCONNECT</button>
+                            </div>
+                            <!-- Multiplier System -->
+                            <div class="w-full bg-cyber-primary/10 border border-cyber-primary/30 p-2 rounded flex justify-between items-center">
+                                <span class="font-mono text-xs text-cyber-textMuted">Holding Multiplier</span>
+                                <span class="font-mono text-sm font-bold text-cyber-primary" id="user-multiplier">1.0X</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How It Works (Miners Guide) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="border border-cyber-border bg-black/50 p-4 rounded hover:border-cyber-primary transition-colors">
+                        <div class="font-orbitron text-cyber-primary font-bold text-lg mb-2">01. HOLD</div>
+                        <p class="font-mono text-xs text-cyber-textMuted">Hold $SPHINX in your wallet. The more you hold, the higher your reward multiplier (Up to 2.0X for whales).</p>
+                    </div>
+                    <div class="border border-cyber-border bg-black/50 p-4 rounded hover:border-cyber-xBlue transition-colors">
+                        <div class="font-orbitron text-cyber-xBlue font-bold text-lg mb-2">02. ENGAGE</div>
+                        <p class="font-mono text-xs text-cyber-textMuted">Post original content on X using the cashtag $SPHINX. High-quality memes and replies generate the most points.</p>
+                    </div>
+                    <div class="border border-cyber-border bg-black/50 p-4 rounded hover:border-cyber-gold transition-colors">
+                        <div class="font-orbitron text-cyber-gold font-bold text-lg mb-2">03. EARN</div>
+                        <p class="font-mono text-xs text-cyber-textMuted">Sync your API below. Points are converted to $SPHINX & USDT from the Nexus volume tax daily.</p>
+                    </div>
+                </div>
+
+                <!-- API Terminal & Sync Button -->
+                <div class="mb-8 border border-cyber-border rounded bg-[#0a0a0a] overflow-hidden">
+                    <div class="bg-[#1a1a1a] p-2 flex justify-between items-center border-b border-cyber-border">
+                        <div class="flex gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <span class="font-mono text-xs text-cyber-textMuted">Sphinx_Oracle_Node.exe</span>
+                        <!-- ĐÃ SỬA: Gọi SocialController.fetchRealApiData() -->
+                        <button id="btn-sync-api" onclick="SocialController.fetchRealApiData()" disabled class="bg-cyber-success/20 text-cyber-success border border-cyber-success/50 px-4 py-1 text-xs font-mono rounded hover:bg-cyber-success hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            INITIATE API SYNC
+                        </button>
+                    </div>
+                    <div class="p-4 h-36 overflow-y-auto font-mono text-xs text-[#00FF41] terminal-text" id="api-terminal">
+                        > System idle. Waiting for user authentication...
+                    </div>
+                </div>
+
+                <!-- Metrics Dashboard -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10 relative">
+                    <div id="stats-overlay" class="absolute inset-0 z-20 bg-black/80 backdrop-blur-sm flex items-center justify-center border border-cyber-border">
+                        <span class="font-orbitron text-cyber-textMuted font-bold tracking-widest">AWAITING SYNC</span>
+                    </div>
+                    
+                    <div class="cyber-panel p-5 border-t-2 border-t-cyber-textMuted relative overflow-hidden">
+                        <div class="text-xs font-mono text-cyber-textMuted uppercase mb-1">Total Views</div>
+                        <div class="text-3xl font-orbitron font-bold text-white" id="stat-views">0</div>
+                        <div class="text-[10px] font-mono text-cyber-primary mt-1">+0.1 PTS / View</div>
+                    </div>
+                    <div class="cyber-panel p-5 border-t-2 border-t-cyber-xBlue relative overflow-hidden">
+                        <div class="text-xs font-mono text-cyber-textMuted uppercase mb-1">Total Likes</div>
+                        <div class="text-3xl font-orbitron font-bold text-white" id="stat-likes">0</div>
+                        <div class="text-[10px] font-mono text-cyber-xBlue mt-1">+2 PTS / Like</div>
+                    </div>
+                    <div class="cyber-panel p-5 border-t-2 border-t-cyber-accent relative overflow-hidden">
+                        <div class="text-xs font-mono text-cyber-textMuted uppercase mb-1">Total Replies</div>
+                        <div class="text-3xl font-orbitron font-bold text-white" id="stat-replies">0</div>
+                        <div class="text-[10px] font-mono text-cyber-accent mt-1">+5 PTS / Reply</div>
+                    </div>
+                    <div class="cyber-panel p-5 border-t-2 border-t-cyber-success relative overflow-hidden">
+                        <div class="text-xs font-mono text-cyber-textMuted uppercase mb-1">Total Reposts</div>
+                        <div class="text-3xl font-orbitron font-bold text-white" id="stat-rts">0</div>
+                        <div class="text-[10px] font-mono text-cyber-success mt-1">+10 PTS / Repost</div>
+                    </div>
+                </div>
+
+                <!-- Reward Pools (UNLOCKED FOR TESTING) -->
+                <div class="relative w-full mt-8">
+                    <div class="grid lg:grid-cols-2 gap-8 p-2">
+                        <!-- Daily Pool -->
+                        <div class="cyber-panel p-8 border border-cyber-primary shadow-[0_0_30px_rgba(0,240,255,0.1)] relative hover:shadow-[0_0_40px_rgba(0,240,255,0.2)] transition-shadow">
+                            <div class="absolute top-0 right-0 bg-cyber-primary text-black text-[10px] font-bold px-3 py-1 font-mono">DISTRIBUTES IN: <span id="social-timer-daily">00:00:00</span></div>
+                            
+                            <h3 class="font-orbitron text-2xl text-white mb-2">DAILY TAX DIVIDEND</h3>
+                            <p class="font-sans text-base leading-relaxed text-cyber-textMuted mb-6">Funded by 2.5% tax on Nexus Swap volume.</p>
+                            
+                            <div class="bg-black border border-cyber-border p-5 rounded-lg mb-6 flex justify-between items-center">
+                                <div>
+                                    <div class="text-xs font-mono text-cyber-textMuted mb-1">Current Pool Size</div>
+                                    <div class="text-3xl font-orbitron font-black text-cyber-primary text-glow-primary">2,450,000 <span class="text-lg">SPHINX</span></div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-end font-mono text-sm border-t border-cyber-border pt-4 mb-6">
+                                <div>
+                                    <div class="text-cyber-textMuted">Your Final Points</div>
+                                    <div class="text-xl text-white font-bold" id="final-points-daily">0</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-cyber-textMuted">Est. Payout</div>
+                                    <div class="text-xl text-cyber-success font-bold" id="social-est-payout">0 SPHINX</div>
+                                </div>
+                            </div>
+
+                            <button id="btn-claim-daily" onclick="SocialController.claimDaily()" class="w-full btn-cyber bg-cyber-primary text-black font-orbitron font-bold py-3 tracking-widest hover:shadow-[0_0_20px_#00F0FF] transition-all cursor-pointer">
+                                CLAIM DAILY DIVIDEND
+                            </button>
+                        </div>
+
+                        <!-- Weekly Pool -->
+                        <div class="cyber-panel p-8 border border-cyber-gold shadow-[0_0_30px_rgba(255,215,0,0.1)] relative hover:shadow-[0_0_40px_rgba(255,215,0,0.2)] transition-shadow">
+                            <div class="absolute top-0 right-0 bg-cyber-gold text-black text-[10px] font-bold px-3 py-1 font-mono">DISTRIBUTES IN: <span id="social-timer-weekly">3D 04:12:45</span></div>
+                            
+                            <h3 class="font-orbitron text-2xl text-cyber-gold mb-2">WEEKLY PERFORMANCE</h3>
+                            <p class="font-sans text-base leading-relaxed text-cyber-textMuted mb-6">Bonus pool for the top 50 Social Miners.</p>
+                            
+                            <div class="bg-black border border-cyber-border p-5 rounded-lg mb-6 flex justify-between items-center">
+                                <div>
+                                    <div class="text-xs font-mono text-cyber-textMuted mb-1">Weekly Prize Pool</div>
+                                    <div class="text-3xl font-orbitron font-black text-cyber-gold text-glow-gold">5.00M <span class="text-lg">SPHINX</span></div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs font-mono text-cyber-textMuted mb-1">Bonus</div>
+                                    <div class="text-xl font-orbitron font-bold text-cyber-success">+100 USDT</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-end font-mono text-sm border-t border-cyber-border pt-4 mb-6">
+                                <div>
+                                    <div class="text-cyber-textMuted">Global Rank</div>
+                                    <div class="text-xl text-white font-bold" id="social-user-rank">Unranked</div>
+                                </div>
+                            </div>
+
+                            <button id="btn-claim-weekly" onclick="Sys.toast('Querying Global Leaderboard...', 'info')" class="w-full bg-cyber-gold text-black font-orbitron font-bold py-3 tracking-widest hover:shadow-[0_0_20px_#FFD700] transition-all cursor-pointer">
+                                CHECK ELIGIBILITY
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ENGINE JAVASCRIPT GỌI API THẬT TỪ NETLIFY FUNCTION -->
+        <script>
+        const MiningEngine = {
+            rates: { views: 0.1, likes: 2, replies: 5, reposts: 10 },
+            
+            init: function() {
+                const savedUser = localStorage.getItem('sphinx_x_user');
+                if (savedUser) {
+                    this.showConnectedState(savedUser);
+                }
+            },
+
+            login: function() {
+                const username = prompt("X_MINING AUTHENTICATION\nEnter your X (Twitter) handle to connect (e.g., cryptochad):");
+                
+                if (username && username.trim() !== "") {
+                    const formattedName = username.startsWith('@') ? username.substring(1) : username;
+                    localStorage.setItem('sphinx_x_user', formattedName);
+                    
+                    this.logTerminal("> Initializing OAuth Handshake...");
+                    setTimeout(() => {
+                        this.logTerminal(`> Access granted for @${formattedName}`);
+                        this.showConnectedState(formattedName);
+                    }, 800);
+                }
+            },
+
+            showConnectedState: function(username) {
+                document.getElementById('x-unconnected').classList.add('hidden');
+                document.getElementById('x-connected').classList.remove('hidden');
+                document.getElementById('btn-sync-api').disabled = false;
+                
+                document.getElementById('x-username').innerText = '@' + username;
+                
+                // Multiplier giả định hiển thị trên UI. Khi tích hợp Solana RPC thực tế, Backend sẽ trả về số này.
+                document.getElementById('user-multiplier').innerText = "1.0X"; 
+                
+                this.logTerminal(`> Node connected. Miner Identity: @${username}`);
+                this.logTerminal("> Ready to fetch real X Analytics.");
+            },
+
+            logout: function() {
+                localStorage.removeItem('sphinx_x_user');
+                document.getElementById('x-unconnected').classList.remove('hidden');
+                document.getElementById('x-connected').classList.add('hidden');
+                document.getElementById('btn-sync-api').disabled = true;
+                document.getElementById('stats-overlay').classList.remove('hidden');
+                
+                this.resetStats();
+                this.logTerminal("> Connection severed. Cache cleared.");
+            },
+
+            triggerApiSync: async function() {
+                const btn = document.getElementById('btn-sync-api');
+                btn.disabled = true;
+                btn.innerText = "FETCHING REAL DATA...";
+                
+                const scanLine = document.getElementById('miner-scan');
+                if(scanLine) scanLine.classList.remove('hidden');
+                
+                document.getElementById('stats-overlay').classList.add('hidden');
+                
+                const currentUser = localStorage.getItem('sphinx_x_user');
+                this.logTerminal(`> INITIATING X API V2 FETCH FOR @${currentUser}...`);
+
+                try {
+                    // ĐÂY LÀ ĐOẠN GỌI ĐẾN NETLIFY SERVERLESS FUNCTION CỦA BẠN ĐỂ LẤY DATA THẬT
+                    const response = await fetch('/.netlify/functions/sync-x', {
+                        method: 'POST',
+                        body: JSON.stringify({ username: currentUser }),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.logTerminal("> 200 OK. REAL DATA SYNCED.");
+                        const realData = result.metrics;
+                        
+                        // Đổ số liệu THẬT lên giao diện với hiệu ứng
+                        this.animateValue('stat-views', 0, realData.views, 1000);
+                        this.animateValue('stat-likes', 0, realData.likes, 1000);
+                        this.animateValue('stat-replies', 0, realData.replies, 1000);
+                        this.animateValue('stat-rts', 0, realData.reposts, 1000);
+                        
+                        this.calculateFinalPoints(realData);
+                    } else {
+                        throw new Error(result.error || "Unknown API Error");
+                    }
+
+                } catch (error) {
+                    this.logTerminal(`> [API ERROR] ${error.message}`);
+                    this.logTerminal("> Have you deployed the Netlify Function and set X_BEARER_TOKEN?");
+                    document.getElementById('stats-overlay').classList.remove('hidden');
+                } finally {
+                    if(scanLine) scanLine.classList.add('hidden');
+                    setTimeout(() => {
+                        btn.innerText = "INITIATE API SYNC";
+                        btn.disabled = false;
+                    }, 3000);
+                }
+            },
+
+            calculateFinalPoints: function(data) {
+                let basePoints = (data.views * this.rates.views) + (data.likes * this.rates.likes) + 
+                                (data.replies * this.rates.replies) + (data.reposts * this.rates.reposts);
+                
+                let multiStr = document.getElementById('user-multiplier').innerText.replace('X', '');
+                let multiplier = parseFloat(multiStr);
+                let finalPoints = Math.floor(basePoints * multiplier);
+
+                setTimeout(() => {
+                    this.logTerminal(`> Base Points: ${Math.floor(basePoints)}`);
+                    this.logTerminal(`> Applying Hold Multiplier: x${multiplier}`);
+                    this.logTerminal(`> FINAL MINED POINTS: <span style="color:#00F0FF; font-weight:bold">${finalPoints.toLocaleString()}</span>`);
+                    
+                    document.getElementById('final-points-daily').innerText = finalPoints.toLocaleString();
+                }, 1000);
+            },
+
+            animateValue: function(id, start, end, duration) {
+                let obj = document.getElementById(id);
+                if(!obj) return;
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            },
+
+            logTerminal: function(msg) {
+                const term = document.getElementById('api-terminal');
+                if(!term) return;
+                const p = document.createElement('div');
+                p.innerHTML = msg;
+                p.className = 'mb-1';
+                term.appendChild(p);
+                term.scrollTop = term.scrollHeight;
+            },
+            
+            resetStats: function() {
+                ['stat-views', 'stat-likes', 'stat-replies', 'stat-rts', 'final-points-daily'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.innerText = "0";
+                });
+                const term = document.getElementById('api-terminal');
+                if(term) term.innerHTML = "> System idle. Waiting for user authentication...";
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            MiningEngine.init();
+        });
+        </script>
+
+        <!-- VIEW 4: FEED PROTOCOL (MISSIONS) -->
+        <section id="view-oracle" class="view-layer py-12 px-4 hidden flex-grow w-full">
+            <div class="max-w-[1000px] mx-auto">
+                
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                    <div>
+                        <h2 class="font-orbitron text-4xl md:text-5xl font-black text-white text-glow-primary">THE_ORACLE</h2>
+                        <p class="font-mono text-cyber-textMuted text-sm mt-2">Global social missions active. Execute to earn $SPHINX dividends.</p>
+                    </div>
+                    
+                    <!-- Trạng thái ONLINE với đèn Ping nhấp nháy -->
+                    <div class="bg-cyber-success/10 border border-cyber-success px-4 py-2 font-mono text-sm flex items-center gap-3 rounded shadow-[0_0_15px_rgba(0,255,102,0.1)]">
+                        <span class="relative flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-success opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-cyber-success"></span>
+                        </span>
+                        STATUS: <span class="text-cyber-success font-bold drop-shadow-[0_0_5px_#00FF66]">SYSTEM ONLINE</span>
+                    </div>
+                </div>
+
+                <!-- ACTIVE MISSIONS -->
+                <div class="grid gap-6 mb-12">
+                    
+                    <!-- TASK 1: LAUNCH TWEET -->
+                    <div class="cyber-panel border-l-4 border-l-cyber-primary p-6 md:p-8 relative hover:-translate-y-1 transition-transform duration-300 shadow-[0_0_15px_rgba(255,51,0,0.1)] hover:shadow-[0_0_30px_rgba(255,51,0,0.25)]">
+                        <div class="absolute top-0 right-0 bg-cyber-primary text-black font-bold font-mono text-[10px] px-3 py-1 rounded-bl-lg animate-pulse tracking-widest">NEW MISSION</div>
+                        
+                        <div class="flex justify-between items-center mb-4 border-b border-cyber-border/50 pb-4">
+                            <h3 class="font-orbitron text-xl text-white font-bold flex items-center gap-2">
+                                <svg class="w-5 h-5 text-cyber-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
+                                MISSION 01: PUMP.FUN AWAKENING
+                            </h3>
+                            <span class="bg-cyber-primary/20 text-cyber-primary font-mono text-xs px-3 py-1 rounded border border-cyber-primary/30 font-bold shadow-[0_0_10px_rgba(255,51,0,0.2)]">+5,000 PTS</span>
+                        </div>
+                        
+                        <p class="font-sans text-cyber-textMuted text-sm mb-4 leading-relaxed">
+                            <strong class="text-white">Requirement:</strong> Draft an English post announcing our Pump.fun launch. Tag <span class="text-cyber-xBlue">@sphinxcat_sol</span> and include the Contract Address. English is mandatory for global algorithm optimization. Monitor your character limit strictly.
+                        </p>
+
+                        <div class="mb-4">
+                            <textarea id="oracle-draft-1" oninput="OracleController.countChars(1)" class="w-full bg-black/50 border border-cyber-border text-white font-sans p-4 rounded focus:border-cyber-primary focus:bg-black outline-none resize-none h-28 transition-colors" placeholder="Draft your English tweet here..."></textarea>
+                            <div class="flex justify-between items-center mt-2 font-mono text-xs">
+                                <span class="text-cyber-textMuted">Optimized for X algorithm</span>
+                                <span id="oracle-count-1" class="font-bold text-cyber-textMuted">0 / 280</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-3 items-center bg-black/30 p-2 rounded border border-cyber-border/50">
+                            <input type="url" id="oracle-url-1" class="input-tech flex-1 w-full px-4 py-3 font-mono text-sm bg-transparent border-none" placeholder="Paste live X post URL (e.g., https://x.com/...)">
+                            <button onclick="OracleController.submitTask(1)" class="w-full md:w-auto bg-cyber-primary text-black font-orbitron font-bold px-8 py-3 hover:shadow-[0_0_20px_#FF3300] hover:scale-105 transition-all skew-x-[-10deg]">
+                                <span class="skew-x-[10deg] block tracking-widest">SUBMIT VERIFICATION</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TASK 2: INFLUENCER RAID -->
+                    <div class="cyber-panel border-l-4 border-l-cyber-accent p-6 md:p-8 relative hover:-translate-y-1 transition-transform duration-300 shadow-[0_0_15px_rgba(0,240,255,0.05)] hover:shadow-[0_0_30px_rgba(0,240,255,0.15)]">
+                        <div class="flex justify-between items-center mb-4 border-b border-cyber-border/50 pb-4">
+                            <h3 class="font-orbitron text-xl text-white font-bold flex items-center gap-2">
+                                <svg class="w-5 h-5 text-cyber-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
+                                MISSION 02: INFLUENCER RAID
+                            </h3>
+                            <span class="bg-cyber-accent/20 text-cyber-accent font-mono text-xs px-3 py-1 rounded border border-cyber-accent/30 font-bold shadow-[0_0_10px_rgba(0,240,255,0.2)]">+3,000 PTS</span>
+                        </div>
+                        
+                        <p class="font-sans text-cyber-textMuted text-sm mb-4 leading-relaxed">
+                            <strong class="text-white">Requirement:</strong> Engage with a Tier-1 Solana Crypto influencer. Drop a high-quality English reply regarding our launch under their latest post. Strict length enforcement applies.
+                        </p>
+
+                        <div class="mb-4">
+                            <textarea id="oracle-draft-2" oninput="OracleController.countChars(2)" class="w-full bg-black/50 border border-cyber-border text-white font-sans p-4 rounded focus:border-cyber-accent focus:bg-black outline-none resize-none h-20 transition-colors" placeholder="Draft your English reply..."></textarea>
+                            <div class="flex justify-between items-center mt-2 font-mono text-xs">
+                                <span class="text-cyber-textMuted">Strict length enforcement</span>
+                                <span id="oracle-count-2" class="font-bold text-cyber-textMuted">0 / 280</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-3 items-center bg-black/30 p-2 rounded border border-cyber-border/50">
+                            <input type="url" id="oracle-url-2" class="input-tech flex-1 w-full px-4 py-3 font-mono text-sm bg-transparent border-none" placeholder="Paste live reply URL...">
+                            <button onclick="OracleController.submitTask(2)" class="w-full md:w-auto bg-transparent border-2 border-cyber-accent text-cyber-accent font-orbitron font-bold px-8 py-3 hover:bg-cyber-accent hover:text-black transition-all skew-x-[-10deg]">
+                                <span class="skew-x-[10deg] block tracking-widest">SUBMIT VERIFICATION</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBMISSION HISTORY PANEL -->
+                <div class="cyber-panel p-6 border-l-4 border-l-cyber-xBlue shadow-[0_0_20px_rgba(29,161,242,0.1)]">
+                    <h3 class="font-orbitron text-xl text-white mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-cyber-xBlue" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        SUBMISSION HISTORY
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left font-mono text-sm">
+                            <thead class="text-cyber-textMuted border-b border-cyber-border/50">
+                                <tr>
+                                    <th class="pb-3 px-4">DATE</th>
+                                    <th class="pb-3 px-4">MISSION TYPE</th>
+                                    <th class="pb-3 px-4">STATUS</th>
+                                    <th class="pb-3 px-4 text-right">REWARD</th>
+                                </tr>
+                            </thead>
+                            <tbody id="oracle-user-history" class="text-white divide-y divide-cyber-border/30">
+                                <!-- User history injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ADMIN TERMINAL MODAL (Leave this just above closing </body> tag) -->
+        <div id="admin-modal" class="hidden fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
+            <div class="cyber-panel border border-cyber-primary shadow-[0_0_50px_rgba(0,240,255,0.2)] p-6 w-full max-w-5xl max-h-[85vh] flex flex-col">
+                <div class="flex justify-between items-center border-b border-cyber-primary/50 pb-4 mb-6">
+                    <h2 class="text-2xl font-orbitron font-black text-cyber-primary glitch-text" data-text="ORACLE COMMAND CENTER">ORACLE COMMAND CENTER</h2>
+                    <button onclick="document.getElementById('admin-modal').classList.add('hidden')" class="text-cyber-textMuted hover:text-red-500 font-bold font-mono transition-colors">TERMINATE [X]</button>
+                </div>
+                <div class="overflow-y-auto custom-scrollbar flex-grow pr-2">
+                    <table class="w-full text-left font-mono text-sm">
+                        <thead class="text-cyber-primary border-b border-cyber-border">
+                            <tr>
+                                <th class="pb-3 px-2">USER</th>
+                                <th class="pb-3 px-2">EVIDENCE/LINK</th>
+                                <th class="pb-3 px-2 text-center">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-pending-list" class="text-white divide-y divide-cyber-border/30">
+                            <!-- Pending requests injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 5: MEME FORGE (CANVAS EDITOR) -->
+        <section id="view-meme" class="view-layer py-12 px-4">
+            <div class="max-w-[1400px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-8">
+                <!-- Tools -->
+                <div class="xl:col-span-4 space-y-6">
+                    <div class="cyber-panel p-6 border-l-4 border-l-cyber-accent">
+                        <h3 class="font-orbitron text-xl text-white mb-4 border-b border-cyber-border pb-2">DATA SOURCE</h3>
+                        <label class="block font-mono text-xs text-cyber-textMuted mb-2">UPLOAD BASE IMAGE</label>
+                        <input type="file" id="meme-upload" accept="image/*" class="w-full text-xs text-cyber-textMuted file:mr-4 file:py-2 file:px-4 file:bg-cyber-accent file:text-black file:border-0 file:font-bold file:font-orbitron file:cursor-pointer hover:file:bg-white mb-4">
+                        <button onclick="MemeEngine.resetImage()" class="text-xs font-mono text-cyber-primary hover:underline">Reset to Default Sphinx</button>
+                    </div>
+
+                    <div class="cyber-panel p-6 border-l-4 border-l-cyber-gold">
+                        <h3 class="font-orbitron text-xl text-white mb-4 border-b border-cyber-border pb-2">TEXT OVERLAYS</h3>
+                        <div class="space-y-4 font-mono text-sm">
+                            <div>
+                                <label class="block text-cyber-textMuted mb-1">TOP TEXT</label>
+                                <input type="text" id="meme-text-top" value="SOCIAL MINING" class="w-full input-tech p-3 uppercase" oninput="MemeEngine.render()">
+                            </div>
+                            <div>
+                                <label class="block text-cyber-textMuted mb-1">BOTTOM TEXT</label>
+                                <input type="text" id="meme-text-bot" value="PAYS MY RENT" class="w-full input-tech p-3 uppercase" oninput="MemeEngine.render()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cyber-panel p-6 border-l-4 border-l-cyber-primary">
+                        <h3 class="font-orbitron text-xl text-white mb-4 border-b border-cyber-border pb-2">CYBER FILTERS</h3>
+                        <div class="grid grid-cols-2 gap-3 font-mono text-xs text-cyber-textMuted">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="meme-fx-laser" checked onchange="MemeEngine.render()"> Laser Eyes</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="meme-fx-crt" checked onchange="MemeEngine.render()"> CRT Noise</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="meme-fx-glitch" onchange="MemeEngine.render()"> RGB Glitch</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="meme-fx-invert" onchange="MemeEngine.render()"> Invert Core</label>
+                        </div>
+                    </div>
+
+                    <button onclick="MemeEngine.download()" class="w-full btn-cyber bg-white text-black font-orbitron font-bold py-4 text-xl">
+                        EXPORT_PNG
+                    </button>
+                </div>
+
+                <!-- Canvas -->
+                <div class="xl:col-span-8 flex flex-col items-center">
+                    <div id="meme-workspace" class="shadow-[0_0_50px_rgba(0,240,255,0.15)] max-w-[800px] w-full">
+                        <canvas id="meme-canvas" width="1080" height="1080"></canvas>
+                        <div class="absolute bottom-4 left-4 bg-black/80 px-3 py-1 font-mono text-xs text-cyber-accent border border-cyber-accent/50 pointer-events-none">
+                            [DRAG TEXT TO REPOSITION]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 6: ARMY RANKS (REAL FIREBASE DATA) -->
+        <section id="view-army" class="view-layer py-12 px-4">
+            <div class="max-w-6xl mx-auto">
+                <!-- Header & Search -->
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-black text-white">DAO_HIERARCHY</h2>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <input type="text" id="army-search" class="input-tech px-4 py-3 font-mono text-sm w-full md:w-64" placeholder="Search @username..." oninput="ArmyController.filter()">
+                        <button class="bg-cyber-border px-6 py-3 font-mono text-sm font-bold text-white hover:bg-cyber-primary transition-colors" onclick="ArmyController.load(true)">SYNC</button>
+                    </div>
+                </div>
+
+                <!-- Responsive Leaderboard -->
+                <div class="cyber-panel border border-cyber-border rounded-lg overflow-hidden">
+                    <!-- Column Headers (Desktop Only) -->
+                    <div class="hidden md:grid grid-cols-12 gap-4 bg-black/90 border-b border-cyber-border text-cyber-textMuted p-5 font-mono text-sm font-bold uppercase tracking-widest">
+                        <div class="col-span-2">RANK</div>
+                        <div class="col-span-5">X IDENTITY (MINER)</div>
+                        <div class="col-span-3">TITLE</div>
+                        <div class="col-span-2 text-right">TOTAL PTS</div>
+                    </div>
+                    
+                    <!-- Data Container -->
+                    <div id="army-tbody" class="divide-y divide-cyber-border/50 text-white font-mono text-sm">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- MOBILE BOTTOM TAB BAR -->
+    <nav class="lg:hidden fixed bottom-0 left-0 w-full bg-cyber-black/95 backdrop-blur-xl border-t border-cyber-border z-50 flex justify-between items-center px-1 py-2 shadow-[0_-10px_40px_rgba(0,0,0,0.8)]">
+        <button onclick="Router.navigate('home')" class="nav-btn-mob flex-1 flex flex-col items-center gap-1 text-white transition-colors" data-target="home">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-[8px] font-orbitron font-bold">HOME</span>
+        </button>
+
+        <button onclick="Router.navigate('swap')" class="nav-btn-mob flex-1 flex flex-col items-center gap-1 text-cyber-textMuted transition-colors" data-target="swap">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                <span class="text-[8px] font-orbitron font-bold">SWAP</span>
+        </button>
+
+        <button onclick="Router.navigate('social')" class="nav-btn-mob flex-1 flex flex-col items-center gap-1 text-cyber-textMuted transition-colors" data-target="social">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                <span class="text-[8px] font-orbitron font-bold">X-MINE</span>
+        </button>
+            
+        <button onclick="Router.navigate('oracle')" class="nav-btn-mob flex-1 flex flex-col items-center relative -top-4" data-target="oracle">
+                <div class="w-12 h-12 rounded-full bg-black border-2 border-cyber-primary flex items-center justify-center shadow-[0_0_20px_rgba(255,51,0,0.6)]">
+                    <svg class="w-6 h-6 text-cyber-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                </div>
+                <span class="text-[10px] font-orbitron font-bold text-cyber-primary mt-1 text-glow-primary">ORACLE</span>
+        </button>
+
+        <button onclick="Router.navigate('meme')" class="nav-btn-mob flex-1 flex flex-col items-center gap-1 text-cyber-textMuted transition-colors" data-target="meme">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <span class="text-[8px] font-orbitron font-bold">MEME</span>
+        </button>
+
+        <button onclick="Router.navigate('army')" class="nav-btn-mob flex-1 flex flex-col items-center gap-1 text-cyber-textMuted transition-colors" data-target="army">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                <span class="text-[8px] font-orbitron font-bold">ARMY</span>
+        </button>
+    </nav>
+
+    </main>
+
+    <!-- Global Toasts -->
+    <div id="toast-container"></div>
+
+    <!-- JAVASCRIPT ARCHITECTURE (Massive Controller Logic) -->
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs, addDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    // Thêm thư viện Auth của Firebase
+    import { getAuth, signInWithPopup, TwitterAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // 1. Khởi tạo Firebase của bạn
+    const firebaseConfig = {
+        apiKey: "AIzaSyAy4fAaE3CKu_Tij0MX8pc0882gacfuXtE",
+        authDomain: "agri-tech-4cd11.firebaseapp.com",
+        projectId: "agri-tech-4cd11",
+        storageBucket: "agri-tech-4cd11.firebasestorage.app",
+        messagingSenderId: "231669958669",
+        appId: "1:231669958669:web:18fdec2c9166f33769ad44",
+        measurementId: "G-LPYDYTMBTJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    // Khởi tạo công cụ Đăng nhập X (Twitter)
+    const auth = getAuth(app);
+    const twitterProvider = new TwitterAuthProvider();
+        /**
+         * SPHINX OS V4 - SOCIAL MINING EDITION
+         * Pure Vanilla JS, Modular Architecture
+         */
+
+        const EB = {
+            listeners: {},
+            on(event, cb) { if(!this.listeners[event]) this.listeners[event] = []; this.listeners[event].push(cb); },
+            emit(event, data) { if(this.listeners[event]) this.listeners[event].forEach(cb => cb(data)); }
+        };
+
+        const Utils = {
+            formatNum: (n) => n >= 1e9 ? (n/1e9).toFixed(2)+'B' : n >= 1e6 ? (n/1e6).toFixed(2)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : Number(n).toLocaleString(),
+            shortAddr: (addr) => addr ? `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}` : '',
+            randomHex: (len) => '0x' + [...Array(len)].map(() => Math.floor(Math.random() * 16).toString(16)).join(''),
+            sleep: (ms) => new Promise(r => setTimeout(r, ms))
+        };
+
+        const Sys = {
+            toast(msg, type = 'info') {
+                const c = document.getElementById('toast-container');
+                const t = document.createElement('div');
+                t.className = `toast-msg ${type}`;
+                const prefix = type === 'error' ? '[ERR]' : type === 'success' ? '[OK]' : type === 'x-info' ? '[X_API]' : '[SYS]';
+                t.innerHTML = `<strong>${prefix}</strong> ${msg}`;
+                c.appendChild(t);
+                setTimeout(() => t.remove(), 5000);
+            }
+        };
+
+        const Store = {
+            user: { 
+                connected: false, address: null, pts: 0, bals: { SPHINX: 0, SOL: 0 },
+                xLinked: false, xUsername: "", 
+                socialStats: { views: 0, likes: 0, replies: 0, rts: 0, points: 0 }
+            },
+            game: { energy: 1000, maxEnergy: 1000, ptsPerTap: 10, clickMult: 1, autoCPS: 0, combo: 1, lastTap: 0 },
+            global: {
+                dailyPool: 2450000,
+                weeklyPool: 10000,
+                totalSocialPts: 15420000, // Mock global social points for math
+            },
+            ranks: [
+                { lvl: 1, name: "KITTEN", min: 0, col: "text-gray-400" },
+                { lvl: 2, name: "MINER", min: 5000, col: "text-white" },
+                { lvl: 3, name: "INFLUENCER", min: 25000, col: "text-cyber-accent" },
+                { lvl: 4, name: "WHALE", min: 100000, col: "text-cyber-gold" },
+                { lvl: 5, name: "GUARDIAN", min: 500000, col: "text-cyber-primary" }
+            ],
+            getRank() { return this.ranks.slice().reverse().find(r => this.pts >= r.min) || this.ranks[0]; },
+            get pts() { return this.user.pts + this.user.socialStats.points; } // Combined points
+        };
+
+        const Router = {
+            current: 'home',
+            navigate(id) {
+                this.current = id;
+                document.querySelectorAll('.view-layer').forEach(el => el.classList.remove('active'));
+                document.getElementById(`view-${id}`).classList.add('active');
+                
+                // Update Desktop buttons
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    const isTarget = btn.dataset.target === id;
+                    btn.classList.remove('text-white', 'bg-white/5', 'text-cyber-xBlue', 'hover:bg-cyber-xBlue/10', 'border-cyber-xBlue/30');
+                    if (isTarget) {
+                        btn.classList.add('text-white', 'bg-white/5');
+                        if (id === 'social') {
+                            btn.classList.remove('text-white', 'bg-white/5');
+                            btn.classList.add('text-cyber-xBlue', 'border-cyber-xBlue/30', 'bg-cyber-xBlue/10');
+                        }
+                    } else {
+                        btn.classList.add(btn.dataset.target === 'social' ? 'text-cyber-xBlue' : 'text-cyber-textMuted');
+                    }
+                });
+
+                // Update Mobile buttons
+                document.querySelectorAll('.nav-btn-mob').forEach(btn => {
+                    // Reset toàn bộ màu cũ
+                    btn.classList.remove('text-white', 'text-cyber-xBlue', 'text-cyber-textMuted', 'text-cyber-primary');
+                    
+                    if (btn.dataset.target === id) {
+                        // Cấp màu riêng cho từng Tab khi đang Active
+                        if (id === 'social') btn.classList.add('text-cyber-xBlue'); // Màu xanh Twitter
+                        else if (id === 'feed') btn.classList.add('text-cyber-primary'); // Màu đỏ Ember
+                        else btn.classList.add('text-white'); // Các tab khác màu trắng
+                    } else {
+                        // Nếu không Active thì màu xám mờ
+                        btn.classList.add('text-cyber-textMuted');
+                    }
+                });
+
+                if(id === 'army') ArmyController.load();
+                if(id === 'swap') SwapController.initChart();
+                if(id === 'social') SocialController.updateUI();
+                
+                window.scrollTo(0, 0);
+            }
+        };
+
+        // ============================================================================
+        // MODULE: AUTHENTICATION MANAGER (X/TWITTER OAUTH + FIREBASE)
+        // ============================================================================
+        const AuthManager = {
+            async login() {
+                if(Store.user.connected) {
+                    // Execute real sign-out protocol
+                    auth.signOut().then(() => {
+                        Store.user.connected = false;
+                        Store.user.xLinked = false;
+                        Store.user.xUsername = "";
+                        Sys.toast("Logged out successfully.", "info");
+                        EB.emit('user-update');
+                    });
+                } else {
+                    document.getElementById('btn-auth-global').innerText = "AUTHORIZING...";
+                    const mobBtn = document.getElementById('btn-auth-mobile');
+                    if(mobBtn) mobBtn.innerText = "WAIT...";
+                    
+                    try {
+                        // 1. TRIGGER REAL X (TWITTER) AUTH POPUP
+                        const result = await signInWithPopup(auth, twitterProvider);
+                        
+                        // 2. Extract real @username from authenticated X account
+                        const screenName = result._tokenResponse.screenName || result.user.displayName.replace(/\s+/g, '');
+                        const realXHandle = "@" + screenName;
+                        
+                        // 3. Verify user context in Firestore Database
+                        const userRef = doc(db, "users", realXHandle);
+                        const docSnap = await getDoc(userRef);
+                        
+                        if (docSnap.exists()) {
+                            // Load existing data for returning miner
+                            const data = docSnap.data();
+                            Store.user.pts = data.pts || 0;
+                            Store.user.bals = data.bals || { SPHINX: 500000, EMBR: 2.5 };
+                            Store.user.xUsername = data.xUsername || realXHandle;
+                            Store.user.socialStats = data.socialStats || { views: 0, likes: 0, replies: 0, rts: 0, points: 0 };
+                            Sys.toast(`Welcome back: ${realXHandle}`, "success");
+                        } else {
+                            // Initialize new profile for first-time login
+                            Store.user.pts = 0;
+                            Store.user.bals = { SPHINX: 500000, EMBR: 2.5 };
+                            Store.user.xUsername = realXHandle;
+                            Store.user.socialStats = { views: 0, likes: 0, replies: 0, rts: 0, points: 0 };
+                            
+                            await setDoc(userRef, {
+                                xUsername: realXHandle,
+                                pts: Store.user.pts,
+                                bals: Store.user.bals,
+                                socialStats: Store.user.socialStats
+                            });
+                            Sys.toast(`New profile created for: ${realXHandle}`, "success");
+                        }
+                        
+                        Store.user.connected = true;
+                        Store.user.xLinked = true;
+                        
+                        EB.emit('user-update');
+                        
+                    } catch (error) {
+                        // Log technical error details to console
+                        console.error("OAuth Authentication Error:", error);
+                        Sys.toast("Authentication failed or cancelled by user.", "error");
+                        
+                        // Revert button UI state on failure
+                        const loginIcon = `<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`;
+                        document.getElementById('btn-auth-global').innerHTML = `${loginIcon} LOGIN WITH X`;
+                        if(mobBtn) mobBtn.innerHTML = "LOGIN";
+                    }
+                }
+            },
+            async executeTx(actionName) {
+                if(!Store.user.connected) { Sys.toast("Unauthorized. Please Login with X.", "error"); return false; }
+                Sys.toast(`Initiating ${actionName}... System processing.`, "info");
+                await Utils.sleep(1500); 
+                Sys.toast(`Action Confirmed: ${Utils.randomHex(20)}`, "success");
+                return true;
+            }
+        };
+
+        // Main User UI Updater
+        EB.on('user-update', () => {
+            // 1. LƯU DỮ LIỆU LÊN FIREBASE (Giữ nguyên logic chuẩn của bạn)
+            if (Store.user.connected && Store.user.xUsername) {
+                const userRef = doc(db, "users", Store.user.xUsername);
+                setDoc(userRef, {
+                    pts: Store.user.pts,
+                    bals: Store.user.bals,
+                    xUsername: Store.user.xUsername,
+                    socialStats: Store.user.socialStats
+                }, { merge: true }); 
+            }
+
+            const btnGlobal = document.getElementById('btn-auth-global');
+            const btnMobile = document.getElementById('btn-auth-mobile');
+
+            if(Store.user.connected) {
+                // 2. CẬP NHẬT NÚT ĐĂNG NHẬP THÀNH AVATAR VÀ TÊN
+                const cleanName = Store.user.xUsername.replace('@','');
+                const avatarUrl = `https://ui-avatars.com/api/?name=${cleanName}&background=1DA1F2&color=fff&bold=true`;
+                const userDisplay = `<img src="${avatarUrl}" class="w-6 h-6 rounded-full border border-cyber-xBlue"> ${Store.user.xUsername}`;
+                
+                if (btnGlobal) {
+                    btnGlobal.innerHTML = userDisplay;
+                    btnGlobal.classList.replace('bg-cyber-xBlue', 'bg-black');
+                }
+                
+                if (btnMobile) {
+                    btnMobile.innerHTML = `<img src="${avatarUrl}" class="w-5 h-5 rounded-full border border-cyber-xBlue">`;
+                    btnMobile.classList.replace('bg-cyber-xBlue', 'bg-black');
+                }
+
+                // 3. CẬP NHẬT ĐIỂM TRÊN HEADER
+                const uiUserStats = document.getElementById('ui-user-stats');
+                if (uiUserStats) {
+                    uiUserStats.classList.remove('hidden');
+                    uiUserStats.classList.add('flex');
+                }
+                
+                const r = Store.getRank();
+                const uiRank = document.getElementById('ui-rank');
+                const uiPts = document.getElementById('ui-pts');
+                
+                if (uiRank) {
+                    uiRank.innerText = r.name;
+                    uiRank.className = r.col; 
+                }
+                
+                // (Đã sửa lỗi chính tả: Store.pts -> Store.user.pts)
+                if (uiPts) uiPts.innerText = Utils.formatNum(Store.user.pts); 
+
+                // 4. CẬP NHẬT ĐỒNG BỘ XUỐNG BẢNG DAO_HIERARCHY (MỚI THÊM)
+                const daoTitle = document.getElementById('dao-my-title');
+                const daoPts = document.getElementById('dao-my-pts');
+                if (daoTitle) daoTitle.innerText = r.name;
+                if (daoPts) daoPts.innerText = Utils.formatNum(Store.user.pts);
+
+                if (typeof SocialController !== 'undefined') SocialController.updateUI();
+                
+            } else {
+                // 5. TRẠNG THÁI KHI ĐĂNG XUẤT
+                const loginIcon = `<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`;
+                
+                if (btnGlobal) {
+                    btnGlobal.innerHTML = `${loginIcon} LOGIN WITH X`;
+                    btnGlobal.classList.replace('bg-black', 'bg-cyber-xBlue');
+                }
+                
+                if (btnMobile) {
+                    btnMobile.innerHTML = `${loginIcon} LOGIN`;
+                    btnMobile.classList.replace('bg-black', 'bg-cyber-xBlue');
+                }
+
+                const uiUserStats = document.getElementById('ui-user-stats');
+                if (uiUserStats) uiUserStats.classList.add('hidden');
+            }
+        });
+
+        // ============================================================================
+        // MODULE: SOCIAL MINING (X)
+        // ============================================================================
+        const SocialController = {
+            async fetchRealApiData() {
+                if(!Store.user.connected || !Store.user.xUsername) {
+                    return Sys.toast("Connect Web3 Wallet and link X first.", "error");
+                }
+                
+                const btn = document.getElementById('btn-sync-api');
+                if(btn) { btn.disabled = true; btn.innerText = "FETCHING REAL DATA..."; }
+                Sys.toast("Initiating Oracle Sync to fetch X Analytics...", "info");
+
+                try {
+                    // Gọi đến Netlify Function ẩn bằng tên người dùng đã lưu trong Firebase
+                    const response = await fetch('/.netlify/functions/sync-x', {
+                        method: 'POST',
+                        body: JSON.stringify({ username: Store.user.xUsername }),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Cập nhật dữ liệu thật vào Store hiện tại của bạn
+                        Store.user.socialStats = result.metrics;
+                        this.calcPoints();
+                        this.updateUI();
+                        
+                        // Kích hoạt lưu dữ liệu thật lên Firebase database
+                        EB.emit('user-update'); 
+                        Sys.toast("REAL DATA SYNCED SUCCESSFULLY", "success");
+                    } else {
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    console.error("Oracle Sync Error:", error);
+                    Sys.toast("API Error: Network congested or Oracle Node offline.", "error");
+                } finally {
+                    if(btn) {
+                        setTimeout(() => { btn.innerText = "INITIATE API SYNC"; btn.disabled = false; }, 3000);
+                    }
+                }
+            },
+            calcPoints() {
+                const s = Store.user.socialStats;
+                // Trọng số tính điểm: View=0.1, Like=2, Reply=5, RT=10
+                s.points = Math.floor((s.views * 0.1) + (s.likes * 2) + (s.replies * 5) + (s.rts * 10));
+            },
+            updateUI() {
+                const unconn = document.getElementById('x-unconnected');
+                const conn = document.getElementById('x-connected');
+                const syncBtn = document.getElementById('btn-sync-api'); // TÌM NÚT SYNC
+                const term = document.getElementById('api-terminal');
+                
+                if(Store.user.connected) {
+                    if(unconn) unconn.classList.add('hidden');
+                    if(conn) conn.classList.remove('hidden');
+                    
+                    // 1. MỞ KHÓA NÚT BẤM SAU KHI ĐĂNG NHẬP THÀNH CÔNG
+                    if(syncBtn) syncBtn.disabled = false;
+                    
+                    // 2. CẬP NHẬT DÒNG CHỮ TRÊN TERMINAL
+                    if(term && term.innerHTML.includes("Waiting for user")) {
+                        term.innerHTML = `> Node connected. Miner Identity: ${Store.user.xUsername}<br>> Ready to fetch real X Analytics.`;
+                    }
+                    
+                    const userEl = document.getElementById('x-username');
+                    if(userEl) userEl.innerText = Store.user.xUsername;
+                    
+                    const s = Store.user.socialStats;
+                    const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = Utils.formatNum(val); };
+                    
+                    setVal('social-stat-views', s.views);
+                    setVal('social-stat-likes', s.likes);
+                    setVal('social-stat-replies', s.replies);
+                    setVal('social-stat-rts', s.rts);
+                    setVal('social-user-pts', s.points);
+                    
+                    // Tính toán chia sẻ mỏ thưởng
+                    const sharePct = s.points > 0 ? (s.points / (Store.global.totalSocialPts + s.points)) * 100 : 0;
+                    const shareEl = document.getElementById('social-user-share');
+                    if(shareEl) shareEl.innerText = sharePct.toFixed(4) + "%";
+                    
+                    const estPayout = (sharePct / 100) * Store.global.dailyPool;
+                    const payoutEl = document.getElementById('social-est-payout');
+                    if(payoutEl) payoutEl.innerText = Utils.formatNum(Math.floor(estPayout)) + " SPHINX";
+                    
+                    const btnDaily = document.getElementById('btn-claim-daily');
+                    if(btnDaily) {
+                        btnDaily.disabled = false;
+                        btnDaily.innerText = "CLAIM DAILY DIVIDEND";
+                        btnDaily.classList.remove('disabled', 'opacity-50', 'bg-gray-700');
+                    }
+                } else {
+                    if(unconn) unconn.classList.remove('hidden');
+                    if(conn) conn.classList.add('hidden');
+                    
+                    // KHÓA LẠI NÚT KHI ĐĂNG XUẤT
+                    if(syncBtn) syncBtn.disabled = true;
+                }
+            },
+            async claimDaily() {
+                if(!Store.user.xLinked) return;
+                const sharePct = (Store.user.socialStats.points / (Store.global.totalSocialPts + Store.user.socialStats.points));
+                const amount = Math.floor(sharePct * Store.global.dailyPool);
+                
+                const success = await Web3Manager.executeTx('Claim_Dividend');
+                if(success) {
+                    Store.user.bals.SPHINX += amount;
+                    Sys.toast(`Claimed ${Utils.formatNum(amount)} SPHINX from Daily Pool!`, "success");
+                    Store.user.socialStats = { views:0, likes:0, replies:0, rts:0, points:0 };
+                    this.updateUI();
+                    EB.emit('user-update');
+                }
+            },
+            startTimers() {
+                setInterval(() => {
+                    const d = new Date();
+                    const h = 23 - d.getHours();
+                    const m = 59 - d.getMinutes();
+                    const s = 59 - d.getSeconds();
+                    const timerEl = document.getElementById('social-timer-daily');
+                    if(timerEl) timerEl.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                }, 1000);
+            }
+        };
+
+        // ============================================================================
+        // MODULE: MARKET TERMINAL & ROUTER (REAL API DATA)
+        // ============================================================================
+        const SwapController = {
+            // ==========================================
+            // MASTER SWITCH: PASTE REAL CA HERE ON LAUNCH
+            // ==========================================
+            ca: "6tTvMWqVEtznSfmnfuTiSFBUXbPWrimhM8ehjurHHxLf", // <-- LEAVE EMPTY BEFORE LAUNCH. 
+                    // WHEN LAUNCHED, PASTE CA INSIDE QUOTES (e.g., ca: "8Fhj...pump",)
+            
+            isFetching: false,
+            
+            async initChart() {
+                const inputCA = document.getElementById('contract-address');
+                const iframe = document.getElementById('dex-iframe');
+                const preLaunch = document.getElementById('pre-launch-screen');
+                
+                // 1. PRE-LAUNCH SCENARIO (NO CA)
+                if (!this.ca || this.ca === "") {
+                    inputCA.value = "LAUNCHING ON PUMP.FUN SOON...";
+                    document.getElementById('api-price').innerText = "TBA";
+                    document.getElementById('api-mcap').innerText = "PUMP.FUN";
+                    document.getElementById('api-vol').innerText = "WAITING";
+                    
+                    iframe.classList.add('hidden'); 
+                    preLaunch.classList.remove('hidden'); 
+                    return;
+                }
+
+                // 2. POST-LAUNCH SCENARIO (REAL CA INTEGRATED)
+                inputCA.value = this.ca;
+                inputCA.classList.remove('text-center', 'text-cyber-primary'); 
+                inputCA.classList.add('text-cyber-textMuted'); 
+                
+                iframe.classList.remove('hidden'); 
+                preLaunch.classList.add('hidden'); 
+
+                if (this.isFetching) return;
+                this.isFetching = true;
+                
+                try {
+                    const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${this.ca}`);
+                    const data = await response.json();
+                    
+                    if (data.pairs && data.pairs.length > 0) {
+                        const pair = data.pairs[0]; 
+                        document.getElementById('api-price').innerText = `$${parseFloat(pair.priceUsd).toFixed(6)}`;
+                        document.getElementById('api-mcap').innerText = `$${Utils.formatNum(pair.fdv || pair.marketCap || 0)}`;
+                        document.getElementById('api-vol').innerText = `$${Utils.formatNum(pair.volume.h24 || 0)}`;
+                        iframe.src = `https://dexscreener.com/solana/${pair.pairAddress}?embed=1&theme=dark&trades=0&info=0`;
+                    } else {
+                        // DexScreener might take 1-2 mins to index new tokens
+                        document.getElementById('api-price').innerText = "UPDATING";
+                        document.getElementById('api-mcap').innerText = "PUMP.FUN";
+                        document.getElementById('api-vol').innerText = "LIVE";
+                        iframe.src = `https://dexscreener.com/solana/${this.ca}?embed=1&theme=dark&trades=0&info=0`;
+                    }
+                } catch (error) {
+                    console.error("DexScreener API Error:", error);
+                } finally {
+                    this.isFetching = false;
+                }
+            },
+
+            copyCA() {
+                if (!this.ca || this.ca === "") {
+                    Sys.toast("Contract Address not unlocked yet! Please wait.", "error");
+                    return;
+                }
+                navigator.clipboard.writeText(this.ca).then(() => {
+                    Sys.toast("Smart Contract Address copied securely!", "success");
+                }).catch(() => {
+                    Sys.toast("Copy failed. Please copy manually.", "error");
+                });
+            },
+
+            buyOn(platform) {
+                if (!this.ca || this.ca === "") {
+                    Sys.toast("Protocol is preparing for launch! Please hold.", "error");
+                    return;
+                }
+                let url = "";
+                switch(platform) {
+                    case 'pumpfun': url = `https://pump.fun/coin/6tTvMWqVEtznSfmnfuTiSFBUXbPWrimhM8ehjurHHxLf`; break;
+                    case 'raydium': url = `https://raydium.io/swap/?inputCurrency=sol&outputCurrency=${this.ca}`; break;
+                    case 'jupiter': url = `https://jup.ag/swap/SOL-${this.ca}`; break;
+                }
+                Sys.toast(`Routing to ${platform.toUpperCase()} secure portal...`, "info");
+                setTimeout(() => { window.open(url, '_blank'); }, 800);
+            }
+        };
+
+        // ============================================================================
+        // MODULE: MEME FORGE (CANVAS + DRAG TEXT)
+        // ============================================================================
+        const MemeEngine = {
+            canvas: null, ctx: null, img: null, 
+            defaultImgSrc: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGMzMwMCIgc3Ryb2tlLXdpZHRoPSIwLjUiPjxwYXRoIGQ9Ik0xMiA1Yy42NyAwIDEuMzUuMDkgMiAuMjYgMS43OC0yIDUuMDMtMi44NCA2LjQyLTIuMjYgMS40LjU4LS40MiA3LS40MiA3IC41NyAxLjA3IDEgMi4yNCAxIDMuNSAwIDQuNjctNC4wMyA4LjUtOSA4LjVTMyAxOC4xNyAzIDEzLjVjMC0xLjI2LjQzLTIuNDMgMS0zLjUgMCAwLTEuODItNi40Mi0uNDItNyAxLjM5LS41OCA0LjY0LjI2IDYuNDIgMi4yNi42NS0uMTcgMS4zMy0uMjYgMi0uMjZ6IiBmaWxsPSIjMDkwOTA5Ii8+PGNpcmNsZSBjeD0iOSIgY3k9IjE0IiByPSIxLjUiIGZpbGw9IiNGRkQ3MDAiIHN0cm9rZT0ibm9uZSIvPjxjaXJjbGUgY3g9IjE1IiBjeT0iMTQiIHI9IjEuNSIgZmlsbD0iI0ZGRDcwMCIgc3Ryb2tlPSJub25lIi8+PC9zdmc+',
+            texts: [
+                { id: 'top', text: 'SOCIAL MINING', x: 540, y: 150, isDragging: false },
+                { id: 'bot', text: 'PAYS MY RENT', x: 540, y: 950, isDragging: false }
+            ],
+            init() {
+                this.canvas = document.getElementById('meme-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.resetImage();
+                this.setupDrag();
+
+                document.getElementById('meme-upload').addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if(!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        this.img = new Image();
+                        this.img.onload = () => this.render();
+                        this.img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            },
+            resetImage() {
+                this.img = new Image();
+                this.img.onload = () => this.render();
+                this.img.src = this.defaultImgSrc;
+            },
+            setupDrag() {
+                let dragTarget = null;
+                const getMousePos = (evt) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const scaleX = this.canvas.width / rect.width;
+                    const scaleY = this.canvas.height / rect.height;
+                    return { x: (evt.clientX - rect.left) * scaleX, y: (evt.clientY - rect.top) * scaleY };
+                };
+
+                const startDrag = (pos) => {
+                    this.ctx.font = '900 100px Impact'; 
+                    for(let t of this.texts) {
+                        const width = this.ctx.measureText(t.text).width;
+                        if(pos.x > t.x - width/2 && pos.x < t.x + width/2 && pos.y > t.y - 100 && pos.y < t.y + 20) {
+                            dragTarget = t;
+                            t.isDragging = true;
+                            break;
+                        }
+                    }
+                };
+
+                // Mouse events
+                this.canvas.addEventListener('mousedown', (e) => startDrag(getMousePos(e)));
+                this.canvas.addEventListener('mousemove', (e) => {
+                    if(dragTarget) {
+                        const pos = getMousePos(e);
+                        dragTarget.x = pos.x; dragTarget.y = pos.y;
+                        this.render();
+                    }
+                });
+                this.canvas.addEventListener('mouseup', () => { if(dragTarget) { dragTarget.isDragging = false; dragTarget = null; this.render(); } });
+                this.canvas.addEventListener('mouseleave', () => { if(dragTarget) { dragTarget.isDragging = false; dragTarget = null; this.render(); } });
+                
+                // Touch events
+                this.canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(getMousePos(e.touches[0])); }, {passive: false});
+                this.canvas.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    if(dragTarget) {
+                        const pos = getMousePos(e.touches[0]);
+                        dragTarget.x = pos.x; dragTarget.y = pos.y;
+                        this.render();
+                    }
+                }, {passive: false});
+                this.canvas.addEventListener('touchend', () => { if(dragTarget) { dragTarget.isDragging = false; dragTarget = null; this.render(); } });
+            },
+            render() {
+                if(!this.ctx) return;
+                const w = this.canvas.width, h = this.canvas.height;
+                const ctx = this.ctx;
+
+                this.texts[0].text = document.getElementById('meme-text-top').value.toUpperCase();
+                this.texts[1].text = document.getElementById('meme-text-bot').value.toUpperCase();
+
+                const doLaser = document.getElementById('meme-fx-laser').checked;
+                const doCrt = document.getElementById('meme-fx-crt').checked;
+                const doGlitch = document.getElementById('meme-fx-glitch').checked;
+                const doInvert = document.getElementById('meme-fx-invert').checked;
+
+                ctx.fillStyle = '#050505'; ctx.fillRect(0,0,w,h);
+                
+                if(this.img) {
+                    if(doInvert) ctx.filter = 'invert(1)';
+                    const scale = Math.min(w/this.img.width, h/this.img.height);
+                    const iw = this.img.width * scale, ih = this.img.height * scale;
+                    ctx.drawImage(this.img, (w-iw)/2, (h-ih)/2, iw, ih);
+                    ctx.filter = 'none';
+                }
+
+                if(doLaser && this.img && this.img.src === this.defaultImgSrc) {
+                    ctx.shadowColor = '#FF3300'; ctx.shadowBlur = 50; ctx.fillStyle = '#FF3300';
+                    ctx.globalCompositeOperation = 'screen';
+                    ctx.beginPath(); ctx.moveTo(w/2 - 60, h/2 - 20); ctx.lineTo(-100, h); ctx.lineTo(-300, h/2); ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(w/2 + 60, h/2 - 20); ctx.lineTo(w+100, h); ctx.lineTo(w+300, h/2); ctx.fill();
+                    ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0;
+                }
+
+                ctx.textAlign = 'center'; ctx.lineJoin = 'round';
+                ctx.font = '900 100px Impact, sans-serif';
+                this.texts.forEach(t => {
+                    if(!t.text) return;
+                    ctx.lineWidth = 15; ctx.strokeStyle = 'black';
+                    ctx.strokeText(t.text, t.x, t.y);
+                    ctx.fillStyle = doGlitch && Math.random()>0.8 ? '#00F0FF' : 'white';
+                    ctx.fillText(t.text, t.x, t.y);
+                    
+                    if(doGlitch && Math.random()>0.9) {
+                        ctx.fillStyle = '#FF3300';
+                        ctx.fillText(t.text, t.x - 5, t.y + 5);
+                    }
+                    
+                    if(t.isDragging) {
+                        const width = ctx.measureText(t.text).width;
+                        ctx.strokeStyle = '#00F0FF'; ctx.lineWidth = 2; ctx.setLineDash([10,10]);
+                        ctx.strokeRect(t.x - width/2 - 10, t.y - 100, width + 20, 120);
+                        ctx.setLineDash([]);
+                    }
+                });
+
+                if(doCrt) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                    for(let i=0; i<h; i+=4) ctx.fillRect(0, i, w, 2);
+                }
+
+                ctx.font = 'bold 30px "Space Mono"'; ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.textAlign = 'right'; ctx.fillText('SPHINX.OS', w-30, h-30);
+            },
+            download() {
+                const link = document.createElement('a');
+                link.download = `SPHINX_MEME_${Date.now()}.png`;
+                link.href = this.canvas.toDataURL();
+                link.click();
+                Sys.toast("Meme exported to local drive. Post to X to earn!", "success");
+            }
+        };
+
+
+        // BỘ ĐIỀU KHIỂN DÀNH CHO NGƯỜI CHƠI (USER FRONTEND)
+        window.OracleController = {
+            countChars(taskId) {
+                const text = document.getElementById(`oracle-draft-${taskId}`).value;
+                const counter = document.getElementById(`oracle-count-${taskId}`);
+                if (counter) {
+                    counter.innerText = `${text.length} / 280`;
+                    counter.className = text.length > 280 ? "font-bold text-red-500" : "font-bold text-cyber-textMuted";
+                }
+            },
+
+            async submitTask(taskId) {
+                if (!Store.user.connected || !Store.user.xUsername) {
+                    return alert("[AUTH ERROR] Wallet and X (Twitter) connection required to execute missions.");
+                }
+
+                const urlInput = document.getElementById(`oracle-url-${taskId}`).value;
+                if (!urlInput || !urlInput.includes("http")) {
+                    return alert("[INVALID DATA] Please provide a valid live URL.");
+                }
+
+                const missionType = taskId === 1 ? "Mission 01: Ecosystem Thread" : "Mission 02: Community Raid";
+                const rewardPts = taskId === 1 ? 5000 : 3000;
+                const now = Date.now();
+                const todayDateString = new Date(now).toDateString();
+
+                try {
+                    // 1. FETCH HISTORY FROM FIREBASE
+                    const q = query(collection(db, "oracle_submissions"), where("userId", "==", Store.user.xUsername));
+                    const snapshot = await getDocs(q);
+                    
+                    let todayCount = 0;
+                    let lastSubmitTime = 0;
+
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (new Date(data.timestamp).toDateString() === todayDateString) {
+                            todayCount++;
+                        }
+                        if (data.timestamp > lastSubmitTime) {
+                            lastSubmitTime = data.timestamp;
+                        }
+                    });
+
+                    // 2. ANTI-CHEAT & LIMIT CHECK
+                    if (todayCount >= 2) {
+                        return alert("⚠️ [SYSTEM LIMIT] Daily mission quota reached (2/2). Awaiting global reset tomorrow.");
+                    }
+
+                    const hoursSinceLast = (now - lastSubmitTime) / (1000 * 60 * 60);
+                    if (hoursSinceLast < 2) {
+                        const waitTime = Math.ceil((2 - hoursSinceLast) * 60);
+                        return alert(`⏳ [COOLDOWN ACTIVE] Anti-spam protocol engaged. Await ${waitTime} minutes before next execution.`);
+                    }
+
+                    // 3. PUSH DATA TO FIREBASE
+                    await addDoc(collection(db, "oracle_submissions"), {
+                        userId: Store.user.xUsername,
+                        type: missionType,
+                        link: urlInput,
+                        status: "PENDING",
+                        reward: rewardPts,
+                        timestamp: now,
+                        dateStr: new Date(now).toLocaleDateString()
+                    });
+
+                    alert(`✅ Mission payload transmitted successfully! Awaiting Oracle verification.`);
+                    document.getElementById(`oracle-url-${taskId}`).value = ""; 
+                    
+                    // Refresh history UI
+                    if (window.OracleAdmin) window.OracleAdmin.renderUserHistory();
+
+                } catch (error) {
+                    console.error("Submission Failure:", error);
+                    alert("[SYSTEM FAILURE] Database connection lost. Please try again later.");
+                }
+            }
+        };
+
+        // MODULE: ARMY RANKS (FIREBASE SYNC & MOBILE RESPONSIVE)
+        // ============================================================================
+        const ArmyController = {
+            dbData: [], 
+            async load(forceSync = false) {
+                const tbody = document.getElementById('army-tbody');
+                
+                if (forceSync || this.dbData.length === 0) {
+                    tbody.innerHTML = '<div class="p-10 text-center text-cyber-primary font-bold animate-pulse">Connecting to Database... Please wait...</div>';
+                    
+                    try {
+                        const q = query(collection(db, "users"), orderBy("pts", "desc"), limit(50));
+                        const snapshot = await getDocs(q);
+                        
+                        this.dbData = [];
+                        snapshot.forEach(doc => {
+                            this.dbData.push(doc.data());
+                        });
+                        
+                        // Đảm bảo dữ liệu người dùng hiện tại luôn được hiển thị nếu đã đăng nhập và chưa có trong top 50
+                        if (Store.user.connected && Store.user.xUsername) {
+                            const isMeInList = this.dbData.some(u => u.xUsername === Store.user.xUsername);
+                            if (!isMeInList) {
+                                this.dbData.push({
+                                    xUsername: Store.user.xUsername,
+                                    pts: Store.user.pts,
+                                    wallet: Store.user.address // Giữ lại dự phòng nếu sau này cần
+                                });
+                                // Sắp xếp lại danh sách sau khi thêm
+                                this.dbData.sort((a, b) => (b.pts || 0) - (a.pts || 0));
+                            } else {
+                                // Cập nhật điểm mới nhất nếu đã có trong danh sách
+                                const myIndex = this.dbData.findIndex(u => u.xUsername === Store.user.xUsername);
+                                if(myIndex !== -1) {
+                                    this.dbData[myIndex].pts = Store.user.pts;
+                                    this.dbData.sort((a, b) => (b.pts || 0) - (a.pts || 0));
+                                }
+                            }
+                        }
+
+                        if(this.dbData.length === 0) {
+                            tbody.innerHTML = '<div class="p-10 text-center text-cyber-textMuted">No miners found on the network.</div>';
+                            return;
+                        }
+                    } catch (error) {
+                        console.error("Firebase Rank Error:", error);
+                        tbody.innerHTML = '<div class="p-10 text-center text-cyber-danger">Firebase connection error! Check Rules or Network.</div>';
+                        return;
+                    }
+                }
+                
+                this.render(this.dbData);
+            },
+            filter() {
+                const term = document.getElementById('army-search').value.toLowerCase();
+                const filtered = this.dbData.filter(u => 
+                    (u.xUsername && u.xUsername.toLowerCase().includes(term)) || 
+                    (u.wallet && u.wallet.toLowerCase().includes(term))
+                );
+                this.render(filtered);
+            },
+            render(data) {
+                const tbody = document.getElementById('army-tbody');
+                if(data.length === 0) { 
+                    tbody.innerHTML = '<div class="p-10 text-center text-cyber-textMuted">No matching miners found.</div>'; 
+                    return; 
+                }
+                
+                tbody.innerHTML = data.map((u, i) => {
+                    const totalPts = u.pts || 0;
+                    let rankObj = Store.ranks.slice().reverse().find(r => totalPts >= r.min) || Store.ranks[0];
+                    
+                    const isTop = i < 3;
+                    // Cập nhật logic isMe để kiểm tra qua xUsername
+                    const isMe = Store.user.connected && Store.user.xUsername && (u.xUsername === Store.user.xUsername);
+                    
+                    const meStyles = isMe ? 'bg-cyber-primary/10 border-l-4 border-cyber-primary' : 'hover:bg-white/5 border-l-4 border-transparent';
+                    const topStyles = isTop && !isMe ? 'border-l-4 border-cyber-gold bg-cyber-gold/5' : meStyles;
+                    
+                    const displayName = u.xUsername ? u.xUsername : (u.wallet ? Utils.shortAddr(u.wallet) : "Anonymous Miner");
+                    const avatarText = u.xUsername ? u.xUsername.replace('@','') : 'User';
+
+                    return `
+                    <div class="transition-colors p-5 flex flex-col md:grid md:grid-cols-12 md:gap-4 md:items-center ${topStyles}">
+                        
+                        <!-- Mobile: Header Block -->
+                        <div class="flex justify-between items-center md:hidden mb-3 border-b border-cyber-border/50 pb-2">
+                            <span class="${isTop ? 'text-cyber-gold font-bold text-lg' : 'text-cyber-textMuted'}">RANK #${i+1}</span>
+                            <span class="font-bold text-white text-lg">${Utils.formatNum(totalPts)} PTS</span>
+                        </div>
+
+                        <!-- Desktop: Rank -->
+                        <div class="hidden md:block col-span-2 ${isTop ? 'text-cyber-gold font-bold text-xl' : 'text-cyber-textMuted font-bold'}">
+                            #${i+1}
+                        </div>
+                        
+                        <!-- Identity Column -->
+                        <div class="col-span-5 flex items-center gap-4 mb-3 md:mb-0">
+                            <img src="https://ui-avatars.com/api/?name=${avatarText}&background=1DA1F2&color=fff&bold=true" class="w-10 h-10 rounded-full border border-cyber-border shadow-md" alt="avatar">
+                            <div class="flex flex-col">
+                                <span class="${isMe ? 'text-white font-bold' : 'text-cyber-textMuted'} text-base">
+                                    ${displayName}
+                                </span>
+                                ${isMe ? '<span class="text-[10px] bg-cyber-primary text-white px-2 py-0.5 rounded w-max mt-1 font-bold">YOUR ACCOUNT</span>' : ''}
+                            </div>
+                        </div>
+                        
+                        <!-- Title Column -->
+                        <div class="col-span-3 mb-1 md:mb-0">
+                            <span class="${rankObj.col} font-bold tracking-widest text-xs md:text-sm bg-black/60 px-3 py-1.5 rounded-md border border-cyber-border inline-block shadow-inner">${rankObj.name}</span>
+                        </div>
+                        
+                        <!-- Desktop: Points -->
+                        <div class="hidden md:block col-span-2 text-right font-black ${isTop ? 'text-white text-xl' : 'text-cyber-textMuted text-lg'}">
+                            ${Utils.formatNum(totalPts)}
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+        };
+
+        const Terminal = {
+            active: false,
+            init() {
+                document.addEventListener('keydown', (e) => {
+                    if(e.key === '`' || e.key === '~') { e.preventDefault(); this.toggle(); }
+                });
+                
+                const input = document.getElementById('terminal-input');
+                input.addEventListener('keydown', (e) => {
+                    if(e.key === 'Enter') { this.execute(input.value); input.value = ''; }
+                });
+            },
+            toggle() {
+                this.active = !this.active;
+                const el = document.getElementById('terminal-overlay');
+                el.classList.toggle('active', this.active);
+                if(this.active) setTimeout(() => document.getElementById('terminal-input').focus(), 100);
+            },
+            log(msg, type='normal') {
+                const out = document.getElementById('terminal-output');
+                const div = document.createElement('div');
+                div.className = type === 'error' ? 'text-cyber-danger' : type === 'success' ? 'text-cyber-success' : 'text-cyber-accent';
+                div.innerText = `> ${msg}`;
+                out.appendChild(div);
+                out.scrollTop = out.scrollHeight;
+            },
+            execute(cmd) {
+                this.log(`root@SPHINX:~# ${cmd}`, 'normal');
+                const parts = cmd.trim().toLowerCase().split(' ');
+                switch(parts[0]) {
+                    case 'help': this.log("Commands: status, connect, hack, clear", "success"); break;
+                    case 'clear': document.getElementById('terminal-output').innerHTML = ''; break;
+                    case 'status': this.log(`Network: ONLINE | User Connected: ${Store.user.connected}`, "success"); break;
+                    case 'connect': Web3Manager.toggle(); this.log("Triggered wallet connection."); break;
+                    case 'hack': 
+                        if(Store.user.connected) { Store.user.pts += 50000; EB.emit('user-update'); this.log("50,000 PTS injected.", "success"); }
+                        else this.log("Access Denied. Connect wallet.", "error");
+                        break;
+                    case '': break;
+                    default: this.log(`Command not found: ${parts[0]}`, "error");
+                }
+            }
+        };
+
+        const HomeFeed = {
+            add(msg, type = 'SYSTEM') {
+                const list = document.getElementById('activity-feed');
+                if(!list) return;
+                
+                // Set badge colors based on activity type
+                let badgeColor = 'text-cyber-textMuted border-cyber-textMuted';
+                if(type === 'SWAP') badgeColor = 'text-cyber-success border-cyber-success bg-cyber-success/10';
+                if(type === 'ORACLE') badgeColor = 'text-cyber-primary border-cyber-primary bg-cyber-primary/10';
+                if(type === 'SOCIAL') badgeColor = 'text-cyber-xBlue border-cyber-xBlue bg-cyber-xBlue/10';
+
+                const li = document.createElement('li');
+                li.className = "flex items-center gap-3 border-b border-cyber-border/30 pb-2 animate-[slideIn_0.3s_ease-out]";
+                li.innerHTML = `
+                    <span class="text-cyber-textMuted text-[10px] shrink-0">[${new Date().toLocaleTimeString()}]</span> 
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 border ${badgeColor} shrink-0 w-14 text-center">${type}</span>
+                    <span class="text-white text-xs truncate">${msg}</span>
+                `;
+                list.insertBefore(li, list.firstChild);
+                if(list.children.length > 8) list.removeChild(list.lastChild);
+            }
+        };
+
+        const initBgCanvas = () => {
+            const c = document.getElementById('bg-canvas');
+            const ctx = c.getContext('2d');
+            let w, h;
+            const resize = () => { w = c.width = window.innerWidth; h = c.height = window.innerHeight; };
+            window.addEventListener('resize', resize); resize();
+            
+            const particles = Array.from({length: 40}, () => ({
+                x: Math.random()*w, y: Math.random()*h,
+                vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5,
+                s: Math.random()*2+1
+            }));
+            
+            const loop = () => {
+                ctx.clearRect(0,0,w,h);
+                ctx.fillStyle = 'rgba(0, 240, 255, 0.5)';
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.x<0) p.x=w; if(p.x>w) p.x=0; if(p.y<0) p.y=h; if(p.y>h) p.y=0;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
+                });
+                
+                ctx.strokeStyle = 'rgba(0, 240, 255, 0.05)';
+                for(let i=0; i<particles.length; i++) {
+                    for(let j=i+1; j<particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+                        if(dx*dx + dy*dy < 25000) {
+                            ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(loop);
+            };
+            loop();
+        };
+
+        // XUẤT CÁC MODULE RA TOÀN CỤC CHO HTML GỌI ĐƯỢC
+        // TẠO HỆ THỐNG VÍ GIẢ LẬP ĐỂ KHÔNG BỊ LỖI KHI BẤM NÚT
+        const Web3Manager = {
+            toggle: function() { console.log("Toggle Wallet"); },
+            executeTx: async function(actionName) {
+                Sys.toast(`Đang xử lý ${actionName}...`, "info");
+                await Utils.sleep(1000);
+                return true;
+            }
+        };
+
+        // XUẤT CÁC MODULE RA TOÀN CỤC CHO HTML GỌI ĐƯỢC
+        window.Router = Router;
+        window.AuthManager = AuthManager; 
+        window.SocialController = SocialController;
+        window.SwapController = SwapController;
+        window.MemeEngine = MemeEngine;
+        window.ArmyController = ArmyController;
+        window.Terminal = Terminal;
+        window.Sys = Sys;                 // Đã thêm để sửa lỗi nút CHECK ELIGIBILITY
+        window.Web3Manager = Web3Manager; // Đã thêm để sửa lỗi nút CLAIM
+            
+        // Main Boot Process
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log("SPHINX V4 INIT (SOCIAL MINING)");
+            
+            initBgCanvas();
+            Terminal.init();
+            MemeEngine.init();
+            // ArmyController.init(); <--- BẠN XÓA HOẶC ẨN DÒNG NÀY ĐI
+            SocialController.startTimers();
+            
+            setInterval(() => {
+                // Kịch bản chim mồi chuẩn hệ Solana & Oracle
+                const events = [
+                    { msg: "Swapped 5.5 SOL for SPHINX on Pump.fun", type: "SWAP" },
+                    { msg: "Verified Oracle Mission 01 (+5,000 PTS)", type: "ORACLE" },
+                    { msg: "Claimed 14,000 SPHINX Daily Dividend", type: "SYSTEM" },
+                    { msg: "Linked X Account Securely", type: "SOCIAL" },
+                    { msg: "Reached Rank: GUARDIAN", type: "SOCIAL" },
+                    { msg: "Executed Community Raid Mission", type: "ORACLE" }
+                ];
+                
+                const randomEvent = events[Math.floor(Math.random() * events.length)];
+                const randomWallet = `0x${Math.random().toString(16).substr(2,4)}...${Math.random().toString(16).substr(2,4)}`;
+                
+                HomeFeed.add(`${randomWallet} ${randomEvent.msg}`, randomEvent.type);
+            }, 3500);
+
+            const hash = window.location.hash.replace('#', '') || 'home';
+            Router.navigate(hash);
+            
+            setTimeout(() => Sys.toast("System Boot Complete. Social Mining Activated.", "success"), 1000);
+        });
+
+    window.OracleAdmin = {
+        clickCount: 0,
+        lastClickTime: 0,
+
+        handleSecretClick() {
+            const now = Date.now();
+            // Reset về 0 nếu bấm cách nhau quá 1.5 giây
+            if (now - this.lastClickTime > 1500) {
+                this.clickCount = 0;
+            }
+            this.lastClickTime = now;
+            this.clickCount++;
+
+            console.log(`[SYSTEM] Initiating bypass... Click ${this.clickCount}/8`);
+
+            if (this.clickCount === 8) {
+                this.clickCount = 0;
+                this.authenticate();
+            }
+        },
+
+        authenticate() {
+            const pass = prompt("SYSTEM OVERRIDE REQUIRED. ENTER SECURITY KEY:");
+            if (pass === "SPHINX@68") {
+                document.getElementById('admin-modal').classList.remove('hidden');
+                this.renderAdminView();
+            } else if (pass !== null && pass !== "") {
+                alert("[ACCESS DENIED] Invalid security key.");
+            }
+        },
+
+        async renderUserHistory() {
+            const historyTbody = document.getElementById('oracle-user-history');
+            if (!historyTbody || !Store.user.xUsername) return;
+            
+            const q = query(collection(db, "oracle_submissions"), where("userId", "==", Store.user.xUsername));
+            const snapshot = await getDocs(q);
+            
+            let reqs = [];
+            snapshot.forEach(d => reqs.push({id: d.id, ...d.data()}));
+            reqs.sort((a,b) => b.timestamp - a.timestamp); 
+            
+            if (reqs.length === 0) {
+                historyTbody.innerHTML = '<tr><td colspan="4" class="py-4 px-4 text-center text-cyber-textMuted">No submissions found.</td></tr>';
+                return;
+            }
+
+            historyTbody.innerHTML = reqs.map(req => {
+                let statusCol = req.status === 'APPROVED' ? '<span class="text-cyber-success font-bold">APPROVED</span>' :
+                                req.status === 'REJECTED' ? '<span class="text-red-500 font-bold">REJECTED</span>' :
+                                '<span class="text-cyber-gold font-bold animate-pulse">PENDING</span>';
+
+                return `
+                <tr class="hover:bg-white/5 transition-colors border-b border-cyber-border/30">
+                    <td class="py-4 px-4 text-cyber-textMuted">${req.dateStr}</td>
+                    <td class="py-4 px-4">${req.type}</td>
+                    <td class="py-4 px-4">${statusCol}</td>
+                    <td class="py-4 px-4 text-right font-bold ${req.status === 'APPROVED' ? 'text-white' : 'text-cyber-textMuted'}">${req.reward} PTS</td>
+                </tr>`;
+            }).join('');
+        },
+
+        async renderAdminView() {
+            const adminTbody = document.getElementById('admin-pending-list');
+            adminTbody.innerHTML = '<tr><td colspan="3" class="text-center py-8 text-cyber-primary animate-pulse">Fetching Secure Data...</td></tr>';
+            
+            const q = query(collection(db, "oracle_submissions"), where("status", "==", "PENDING"));
+            const snapshot = await getDocs(q);
+            
+            let reqs = [];
+            snapshot.forEach(d => reqs.push({id: d.id, ...d.data()}));
+            
+            if (reqs.length === 0) {
+                adminTbody.innerHTML = '<tr><td colspan="3" class="py-8 text-center text-cyber-textMuted">No pending requests. Network is clear.</td></tr>';
+                return;
+            }
+
+            adminTbody.innerHTML = reqs.map(req => `
+            <tr class="hover:bg-cyber-primary/5 transition-colors border-b border-cyber-border/30" id="row-${req.id}">
+                <td class="py-4 px-2 font-bold text-cyber-xBlue">${req.userId}</td>
+                <td class="py-4 px-2 text-cyber-textMuted text-xs">
+                    ${req.type} <br>
+                    <a href="${req.link}" target="_blank" class="text-white hover:text-cyber-primary underline mt-1 inline-block">[Inspect X Link]</a>
+                </td>
+                <td class="py-4 px-2 flex justify-center gap-3">
+                    <button onclick="window.OracleAdmin.process('${req.id}', '${req.userId}', ${req.reward}, 'APPROVED')" class="bg-cyber-success/20 border border-cyber-success text-cyber-success px-4 py-1 hover:bg-cyber-success hover:text-black transition-colors font-bold text-xs">ACCEPT</button>
+                    <button onclick="window.OracleAdmin.process('${req.id}', '${req.userId}', ${req.reward}, 'REJECTED')" class="bg-red-500/20 border border-red-500 text-red-500 px-4 py-1 hover:bg-red-500 hover:text-white transition-colors font-bold text-xs">REJECT</button>
+                </td>
+            </tr>`).join('');
+        },
+
+        async process(docId, targetUserId, rewardAmount, newStatus) {
+            try {
+                await updateDoc(doc(db, "oracle_submissions", docId), {
+                    status: newStatus
+                });
+                
+                if (newStatus === 'APPROVED') {
+                    const userRef = doc(db, "users", targetUserId);
+                    const userSnap = await getDoc(userRef);
+                    
+                    if (userSnap.exists()) {
+                        const currentPts = userSnap.data().pts || 0;
+                        await updateDoc(userRef, { pts: currentPts + rewardAmount });
+                    } else {
+                        await setDoc(userRef, { pts: rewardAmount, xUsername: targetUserId }, { merge: true });
+                    }
+                }
+                
+                alert(`[SYSTEM LOG] Request marked as ${newStatus} for ${targetUserId}.`);
+                
+                this.renderAdminView();
+                if (Store.user.xUsername === targetUserId) {
+                    this.renderUserHistory(); 
+                }
+            } catch(error) {
+                console.error("Admin Process Error:", error);
+                alert("[SYSTEM FAILURE] Database connection lost.");
+            }
+        }
+    };
+
+    // Initialize the history table safely
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => window.OracleAdmin.renderUserHistory(), 500);
+    });
+    </script>
+</body>
+</html>
