@@ -714,31 +714,113 @@
                                         <div class="font-mono text-[10px] text-cyber-success">✓ Oracle Connected</div>
                                     </div>
                                 </div>
-                                <!-- ĐÃ SỬA: Gọi AuthManager.login() để sign out -->
                                 <button onclick="AuthManager.login()" class="text-xs text-cyber-textMuted hover:text-red-500 font-mono">DISCONNECT</button>
                             </div>
+                            
+                            <!-- ĐÃ THÊM: Ô nhập ví Solana -->
+                            <div class="w-full mb-3">
+                                <label class="text-[10px] font-mono text-cyber-textMuted block mb-1">SOLANA WALLET ADDRESS (For Tier Check)</label>
+                                <input type="text" id="sol-wallet-input" placeholder="Paste your SOL address here..." class="w-full bg-black border border-cyber-border text-white text-xs p-2 outline-none focus:border-cyber-primary font-mono transition-colors" onblur="SocialController.saveWallet()">
+                            </div>
+
                             <!-- Multiplier System -->
                             <div class="w-full bg-cyber-primary/10 border border-cyber-primary/30 p-2 rounded flex justify-between items-center">
                                 <span class="font-mono text-xs text-cyber-textMuted">Holding Multiplier</span>
-                                <span class="font-mono text-sm font-bold text-cyber-primary" id="user-multiplier">1.0X</span>
+                                <span class="font-mono text-sm font-bold text-cyber-primary" id="user-multiplier">Pending...</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- How It Works (Miners Guide) -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <div class="border border-cyber-border bg-black/50 p-4 rounded hover:border-cyber-primary transition-colors">
-                        <div class="font-orbitron text-cyber-primary font-bold text-lg mb-2">01. HOLD</div>
-                        <p class="font-mono text-xs text-cyber-textMuted">Hold $SPHINX in your wallet. The more you hold, the higher your reward multiplier (Up to 2.0X for whales).</p>
-                    </div>
-                    <div class="border border-cyber-border bg-black/50 p-4 rounded hover:border-cyber-xBlue transition-colors">
-                        <div class="font-orbitron text-cyber-xBlue font-bold text-lg mb-2">02. ENGAGE</div>
-                        <p class="font-mono text-xs text-cyber-textMuted">Post original content on X using the cashtag $SPHINX. High-quality memes and replies generate the most points.</p>
-                    </div>
-                    <div class="border border-cyber-border bg-black/50 p-4 rounded hover:border-cyber-gold transition-colors">
-                        <div class="font-orbitron text-cyber-gold font-bold text-lg mb-2">03. EARN</div>
-                        <p class="font-mono text-xs text-cyber-textMuted">Sync your API below. Points are converted to $SPHINX & USDT from the Nexus volume tax daily.</p>
+                <!-- MINER'S PROTOCOL GUIDE (NEW UI) -->
+                <div class="cyber-panel p-6 mb-8 border border-cyber-border shadow-[0_0_20px_rgba(0,240,255,0.05)]">
+                    <h3 class="font-orbitron text-2xl text-white mb-6 flex items-center gap-3 border-b border-cyber-border/50 pb-4">
+                        <svg class="w-6 h-6 text-cyber-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        PROTOCOL RULES & MULTIPLIERS
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Column 1: Core Rules -->
+                        <div class="space-y-4">
+                            <h4 class="font-mono text-xs font-bold text-cyber-primary tracking-widest uppercase mb-3">01. Execution Rules</h4>
+                            
+                            <div class="bg-black/40 border-l-2 border-cyber-primary p-3">
+                                <div class="text-sm font-bold text-white font-orbitron mb-1">THE CASHTAG</div>
+                                <div class="text-[11px] font-mono text-cyber-textMuted">Every valid post, quote, or reply must include <span class="text-cyber-primary font-bold">$SPHINX</span> to be indexed.</div>
+                            </div>
+                            
+                            <div class="bg-black/40 border-l-2 border-cyber-primary p-3">
+                                <div class="text-sm font-bold text-white font-orbitron mb-1">30-HOUR WINDOW</div>
+                                <div class="text-[11px] font-mono text-cyber-textMuted">Only engagements generated from posts published within the last 30 hours are eligible.</div>
+                            </div>
+                            
+                            <div class="bg-black/40 border-l-2 border-cyber-primary p-3">
+                                <div class="text-sm font-bold text-white font-orbitron mb-1">DAILY QUOTA & CAP</div>
+                                <div class="text-[11px] font-mono text-cyber-textMuted">Max <span class="text-white font-bold">3 submissions</span> per day. Anti-bot algorithm caps raw output at 100,000 points per sync.</div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Multiplier Tiers -->
+                        <div class="space-y-3">
+                            <h4 class="font-mono text-xs font-bold text-cyber-gold tracking-widest uppercase mb-3">02. Wealth Multiplier</h4>
+                            
+                            <div class="flex justify-between items-center border border-cyber-border/50 bg-black/60 p-3 hover:border-cyber-textMuted transition-colors">
+                                <div>
+                                    <div class="text-xs font-bold text-cyber-textMuted font-orbitron">TIER 0: COMMUNITY</div>
+                                    <div class="text-[10px] font-mono text-cyber-textMuted mt-1">0 - 999.9K $SPHINX</div>
+                                </div>
+                                <div class="font-mono font-bold text-cyber-textMuted text-lg">1,000X</div>
+                            </div>
+
+                            <div class="flex justify-between items-center border border-cyber-border/50 bg-black/60 p-3 hover:border-cyber-xBlue transition-colors">
+                                <div>
+                                    <div class="text-xs font-bold text-cyber-xBlue font-orbitron">TIER 1: DOLPHIN</div>
+                                    <div class="text-[10px] font-mono text-cyber-textMuted mt-1">1M - 9.99M $SPHINX</div>
+                                </div>
+                                <div class="font-mono font-bold text-cyber-xBlue text-lg">1,500X</div>
+                            </div>
+
+                            <div class="flex justify-between items-center border border-cyber-border/50 bg-black/60 p-3 hover:border-cyber-gold transition-colors">
+                                <div>
+                                    <div class="text-xs font-bold text-cyber-gold font-orbitron">TIER 2: SHARK</div>
+                                    <div class="text-[10px] font-mono text-cyber-textMuted mt-1">10M - 99.99M $SPHINX</div>
+                                </div>
+                                <div class="font-mono font-bold text-cyber-gold text-lg">2,000X</div>
+                            </div>
+
+                            <div class="flex justify-between items-center border border-cyber-primary/30 bg-cyber-primary/5 p-3 shadow-[0_0_15px_rgba(255,51,0,0.1)]">
+                                <div>
+                                    <div class="text-xs font-bold text-cyber-primary font-orbitron">TIER 3: WHALE</div>
+                                    <div class="text-[10px] font-mono text-cyber-primary mt-1">100M+ $SPHINX</div>
+                                </div>
+                                <div class="font-mono font-black text-cyber-primary text-xl">3,000X</div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: Rewards -->
+                        <div class="space-y-4">
+                            <h4 class="font-mono text-xs font-bold text-cyber-success tracking-widest uppercase mb-3">03. Dividend Distribution</h4>
+                            
+                            <div class="bg-black/40 border border-cyber-border p-4 rounded text-center relative overflow-hidden group hover:border-cyber-success transition-colors">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-cyber-success opacity-50 group-hover:opacity-100"></div>
+                                <svg class="w-8 h-8 mx-auto text-cyber-success mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <div class="text-sm font-bold text-white font-orbitron mb-2">DYNAMIC DAILY POOL</div>
+                                <div class="text-[11px] font-mono text-cyber-textMuted leading-relaxed">
+                                    Your final points dictate your share of the daily $SPHINX tax pool. The higher your global point percentage, the larger your payout at UTC 00:00.
+                                </div>
+                            </div>
+
+                            <div class="bg-black/40 border border-cyber-border p-4 rounded text-center relative overflow-hidden group hover:border-cyber-gold transition-colors">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-cyber-gold opacity-50 group-hover:opacity-100"></div>
+                                <div class="text-sm font-bold text-cyber-gold font-orbitron mb-2">WEEKLY USDT BOUNTY</div>
+                                <div class="text-[11px] font-mono text-cyber-textMuted leading-relaxed">
+                                    Top performers on the 7-day Leaderboard receive exclusive USDT airdrops directly to their registered Solana wallets.
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -1016,116 +1098,141 @@
         });
         </script>
 
-        <!-- VIEW 4: FEED PROTOCOL (MISSIONS) -->
-        <section id="view-oracle" class="view-layer py-12 px-4 hidden flex-grow w-full">
-            <div class="max-w-[1000px] mx-auto">
+        <!-- VIEW 4: SPHINX LOTTERY PROTOCOL (GAME-FI) -->
+        <section id="view-oracle" class="view-layer py-12 px-4 hidden flex-grow w-full relative">
+            <div class="max-w-[1200px] mx-auto">
                 
-                <!-- Header -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                <!-- Header & Round Status -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-cyber-border pb-6">
                     <div>
-                        <h2 class="font-orbitron text-4xl md:text-5xl font-black text-white text-glow-primary">THE_ORACLE</h2>
-                        <p class="font-mono text-cyber-textMuted text-sm mt-2">Global social missions active. Execute to earn $SPHINX dividends.</p>
+                        <h2 class="font-orbitron text-4xl md:text-5xl font-black text-white text-glow-primary glitch-text" data-text="THE_ORACLE_LOTTERY">THE_ORACLE_LOTTERY</h2>
+                        <p class="font-mono text-cyber-textMuted text-sm mt-2">Decentralized VRF RNG. Hold $SPHINX to maximize your winning probability.</p>
                     </div>
                     
-                    <!-- Trạng thái ONLINE với đèn Ping nhấp nháy -->
-                    <div class="bg-cyber-success/10 border border-cyber-success px-4 py-2 font-mono text-sm flex items-center gap-3 rounded shadow-[0_0_15px_rgba(0,255,102,0.1)]">
-                        <span class="relative flex h-3 w-3">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-success opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-cyber-success"></span>
-                        </span>
-                        STATUS: <span class="text-cyber-success font-bold drop-shadow-[0_0_5px_#00FF66]">SYSTEM ONLINE</span>
+                    <div class="flex flex-col items-end gap-2">
+                        <div class="bg-cyber-primary/10 border border-cyber-primary px-4 py-2 font-mono text-sm flex items-center gap-3 rounded shadow-[0_0_15px_rgba(255,51,0,0.1)]">
+                            <span class="relative flex h-3 w-3">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-primary opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-cyber-primary"></span>
+                            </span>
+                            ROUND STATE: <span class="text-cyber-primary font-bold drop-shadow-[0_0_5px_#FF3300]" id="lottery-state">ACTIVE</span>
+                        </div>
+                        <div class="font-orbitron text-xs text-cyber-textMuted font-bold">
+                            ENDS IN: <span class="text-white text-lg tracking-widest" id="lottery-timer">05:12:44:00</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- ACTIVE MISSIONS -->
-                <div class="grid gap-6 mb-12">
-                    
-                    <!-- TASK 1: LAUNCH TWEET -->
-                    <div class="cyber-panel border-l-4 border-l-cyber-primary p-6 md:p-8 relative hover:-translate-y-1 transition-transform duration-300 shadow-[0_0_15px_rgba(255,51,0,0.1)] hover:shadow-[0_0_30px_rgba(255,51,0,0.25)]">
-                        <div class="absolute top-0 right-0 bg-cyber-primary text-black font-bold font-mono text-[10px] px-3 py-1 rounded-bl-lg animate-pulse tracking-widest">NEW MISSION</div>
-                        
-                        <div class="flex justify-between items-center mb-4 border-b border-cyber-border/50 pb-4">
-                            <h3 class="font-orbitron text-xl text-white font-bold flex items-center gap-2">
-                                <svg class="w-5 h-5 text-cyber-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
-                                MISSION 01: PUMP.FUN AWAKENING
-                            </h3>
-                            <span class="bg-cyber-primary/20 text-cyber-primary font-mono text-xs px-3 py-1 rounded border border-cyber-primary/30 font-bold shadow-[0_0_10px_rgba(255,51,0,0.2)]">+5,000 PTS</span>
+                <!-- Global Prize Pool Overview -->
+                <div class="cyber-panel p-6 mb-8 border border-cyber-gold/50 shadow-[0_0_30px_rgba(255,215,0,0.1)] bg-gradient-to-br from-[#1a1600] to-black">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="border-r border-cyber-border/50 pr-4">
+                            <div class="text-xs font-mono text-cyber-textMuted mb-2 uppercase">Current Grand Prize Pool</div>
+                            <div class="text-4xl font-orbitron font-black text-cyber-gold text-glow-gold" id="lottery-prize-pool">1,540,000 <span class="text-xl">SPHINX</span></div>
                         </div>
-                        
-                        <p class="font-sans text-cyber-textMuted text-sm mb-4 leading-relaxed">
-                            <strong class="text-white">Requirement:</strong> Draft an English post announcing our Pump.fun launch. Tag <span class="text-cyber-xBlue">@sphinxcat_sol</span> and include the Contract Address. English is mandatory for global algorithm optimization. Monitor your character limit strictly.
-                        </p>
+                        <div class="border-r border-cyber-border/50 px-4">
+                            <div class="text-xs font-mono text-cyber-textMuted mb-2 uppercase">Total Tickets in Round</div>
+                            <div class="text-4xl font-orbitron font-black text-white" id="lottery-total-tickets">8,942,100</div>
+                        </div>
+                        <div class="pl-4 flex flex-col justify-center">
+                            <div class="text-xs font-mono text-cyber-textMuted mb-2 uppercase">Your Winning Probability</div>
+                            <div class="text-4xl font-orbitron font-black text-cyber-accent text-glow-accent" id="lottery-win-prob">0.00%</div>
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="mb-4">
-                            <textarea id="oracle-draft-1" oninput="OracleController.countChars(1)" class="w-full bg-black/50 border border-cyber-border text-white font-sans p-4 rounded focus:border-cyber-primary focus:bg-black outline-none resize-none h-28 transition-colors" placeholder="Draft your English tweet here..."></textarea>
-                            <div class="flex justify-between items-center mt-2 font-mono text-xs">
-                                <span class="text-cyber-textMuted">Optimized for X algorithm</span>
-                                <span id="oracle-count-1" class="font-bold text-cyber-textMuted">0 / 280</span>
+                <!-- User Control Dashboard -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
+                    
+                    <!-- Left: Player Stats & Ticket Calculation -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="cyber-panel p-6 border-l-4 border-l-cyber-accent relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-2 opacity-5 pointer-events-none">
+                                <svg class="w-32 h-32 text-cyber-accent" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg>
+                            </div>
+                            
+                            <h3 class="font-orbitron text-xl text-white mb-4 border-b border-cyber-border pb-2">YOUR TICKETS RADAR</h3>
+                            
+                            <!-- Penalty Warning -->
+                            <div id="lottery-penalty-warning" class="hidden mb-4 bg-red-500/10 border border-red-500 p-3 rounded font-mono text-xs text-red-400">
+                                <strong>⚠️ ANTI-DUMP WARNING:</strong> Your current balance is lower than your snapshot Hold Amount. Buy more $SPHINX immediately or your Hold Tickets will be burned to 0 at the end of the round!
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 font-mono text-sm mb-6">
+                                <div class="bg-black/50 border border-cyber-border p-3 rounded">
+                                    <div class="text-cyber-textMuted text-[10px] uppercase">Deposit Tickets (x50)</div>
+                                    <div class="text-xl font-bold text-white" id="user-deposit-tickets">0</div>
+                                </div>
+                                <div class="bg-black/50 border border-cyber-border p-3 rounded">
+                                    <div class="text-cyber-textMuted text-[10px] uppercase">Hold Tickets (x10)</div>
+                                    <div class="text-xl font-bold text-cyber-success" id="user-hold-tickets">0</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-cyber-accent/10 border border-cyber-accent/50 p-4 rounded flex justify-between items-center mb-6 shadow-[inset_0_0_20px_rgba(0,240,255,0.1)]">
+                                <span class="font-orbitron font-bold text-cyber-textMuted tracking-widest">TOTAL TICKETS</span>
+                                <span class="font-orbitron font-black text-3xl text-cyber-accent" id="user-total-tickets">0</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 font-mono text-xs text-cyber-textMuted">
+                                <div class="border-t border-cyber-border pt-2">
+                                    Snapshot Hold Amount: <span class="text-white font-bold" id="user-hold-amount">0</span> SPHINX
+                                </div>
+                                <div class="border-t border-cyber-border pt-2 text-right">
+                                    Actual Balance: <span class="text-white font-bold" id="user-actual-balance">0</span> SPHINX
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Deposit Actions -->
+                    <div class="lg:col-span-5 space-y-6">
+                        
+                        <!-- AUTO POOL (Recommended) -->
+                        <div class="cyber-panel p-6 border border-cyber-success hover:shadow-[0_0_20px_rgba(0,255,102,0.15)] transition-all">
+                            <div class="flex justify-between items-center border-b border-cyber-border pb-2 mb-4">
+                                <h3 class="font-orbitron text-lg text-cyber-success font-bold flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    AUTO POOL
+                                </h3>
+                                <span class="bg-cyber-success/20 text-cyber-success text-[10px] font-mono px-2 py-1 rounded">RECOMMENDED</span>
+                            </div>
+                            
+                            <p class="font-mono text-[10px] text-cyber-textMuted mb-4 leading-relaxed">Deposit to Auto Pool to join rounds automatically at block #0. Secures 100% Hold Duration for maximum Hold Tickets.</p>
+                            
+                            <div class="flex justify-between font-mono text-xs mb-2">
+                                <span class="text-cyber-textMuted">Auto Pool Balance:</span>
+                                <span class="text-white font-bold"><span id="auto-pool-balance">0</span> SPHINX</span>
+                            </div>
+                            
+                            <div class="space-y-3 mt-4">
+                                <input type="number" id="input-autopool-deposit" class="w-full input-tech p-3 font-mono text-sm" placeholder="Amount to fund Auto Pool...">
+                                <button onclick="OracleController.fundAutoPool()" class="w-full bg-transparent border-2 border-cyber-success text-cyber-success font-orbitron font-bold py-3 hover:bg-cyber-success hover:text-black transition-all">FUND AUTO POOL</button>
+                            </div>
+
+                            <div class="border-t border-cyber-border/50 mt-4 pt-4">
+                                <label class="block font-mono text-xs text-cyber-textMuted mb-2">Auto-Join Amount Per Round:</label>
+                                <div class="flex gap-2">
+                                    <input type="number" id="input-autopool-join" class="w-full input-tech p-2 font-mono text-sm" placeholder="e.g. 500">
+                                    <button onclick="OracleController.setAutoJoin()" class="bg-cyber-border px-4 font-mono text-xs hover:bg-white hover:text-black transition-colors">SAVE</button>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex flex-col md:flex-row gap-3 items-center bg-black/30 p-2 rounded border border-cyber-border/50">
-                            <input type="url" id="oracle-url-1" class="input-tech flex-1 w-full px-4 py-3 font-mono text-sm bg-transparent border-none" placeholder="Paste live X post URL (e.g., https://x.com/...)">
-                            <button onclick="OracleController.submitTask(1)" class="w-full md:w-auto bg-cyber-primary text-black font-orbitron font-bold px-8 py-3 hover:shadow-[0_0_20px_#FF3300] hover:scale-105 transition-all skew-x-[-10deg]">
-                                <span class="skew-x-[10deg] block tracking-widest">SUBMIT VERIFICATION</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- TASK 2: INFLUENCER RAID -->
-                    <div class="cyber-panel border-l-4 border-l-cyber-accent p-6 md:p-8 relative hover:-translate-y-1 transition-transform duration-300 shadow-[0_0_15px_rgba(0,240,255,0.05)] hover:shadow-[0_0_30px_rgba(0,240,255,0.15)]">
-                        <div class="flex justify-between items-center mb-4 border-b border-cyber-border/50 pb-4">
-                            <h3 class="font-orbitron text-xl text-white font-bold flex items-center gap-2">
-                                <svg class="w-5 h-5 text-cyber-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
-                                MISSION 02: INFLUENCER RAID
-                            </h3>
-                            <span class="bg-cyber-accent/20 text-cyber-accent font-mono text-xs px-3 py-1 rounded border border-cyber-accent/30 font-bold shadow-[0_0_10px_rgba(0,240,255,0.2)]">+3,000 PTS</span>
-                        </div>
-                        
-                        <p class="font-sans text-cyber-textMuted text-sm mb-4 leading-relaxed">
-                            <strong class="text-white">Requirement:</strong> Engage with a Tier-1 Solana Crypto influencer. Drop a high-quality English reply regarding our launch under their latest post. Strict length enforcement applies.
-                        </p>
-
-                        <div class="mb-4">
-                            <textarea id="oracle-draft-2" oninput="OracleController.countChars(2)" class="w-full bg-black/50 border border-cyber-border text-white font-sans p-4 rounded focus:border-cyber-accent focus:bg-black outline-none resize-none h-20 transition-colors" placeholder="Draft your English reply..."></textarea>
-                            <div class="flex justify-between items-center mt-2 font-mono text-xs">
-                                <span class="text-cyber-textMuted">Strict length enforcement</span>
-                                <span id="oracle-count-2" class="font-bold text-cyber-textMuted">0 / 280</span>
+                        <!-- MANUAL DEPOSIT -->
+                        <div class="cyber-panel p-6 border-l-4 border-l-cyber-textMuted bg-black/80">
+                            <h3 class="font-orbitron text-lg text-white mb-2">MANUAL DEPOSIT</h3>
+                            <p class="font-mono text-[10px] text-cyber-textMuted mb-4">Join current round manually. Note: Late joining reduces Hold Duration multiplier.</p>
+                            
+                            <div class="flex gap-2">
+                                <input type="number" id="input-manual-deposit" class="w-full input-tech p-3 font-mono text-sm" placeholder="Enter SPHINX amount...">
+                                <button onclick="OracleController.depositManual()" class="bg-white text-black font-orbitron font-bold px-6 hover:bg-cyber-primary hover:text-white transition-colors">DEPOSIT</button>
                             </div>
                         </div>
 
-                        <div class="flex flex-col md:flex-row gap-3 items-center bg-black/30 p-2 rounded border border-cyber-border/50">
-                            <input type="url" id="oracle-url-2" class="input-tech flex-1 w-full px-4 py-3 font-mono text-sm bg-transparent border-none" placeholder="Paste live reply URL...">
-                            <button onclick="OracleController.submitTask(2)" class="w-full md:w-auto bg-transparent border-2 border-cyber-accent text-cyber-accent font-orbitron font-bold px-8 py-3 hover:bg-cyber-accent hover:text-black transition-all skew-x-[-10deg]">
-                                <span class="skew-x-[10deg] block tracking-widest">SUBMIT VERIFICATION</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
-
-                <!-- SUBMISSION HISTORY PANEL -->
-                <div class="cyber-panel p-6 border-l-4 border-l-cyber-xBlue shadow-[0_0_20px_rgba(29,161,242,0.1)]">
-                    <h3 class="font-orbitron text-xl text-white mb-6 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-cyber-xBlue" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                        SUBMISSION HISTORY
-                    </h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left font-mono text-sm">
-                            <thead class="text-cyber-textMuted border-b border-cyber-border/50">
-                                <tr>
-                                    <th class="pb-3 px-4">DATE</th>
-                                    <th class="pb-3 px-4">MISSION TYPE</th>
-                                    <th class="pb-3 px-4">STATUS</th>
-                                    <th class="pb-3 px-4 text-right">REWARD</th>
-                                </tr>
-                            </thead>
-                            <tbody id="oracle-user-history" class="text-white divide-y divide-cyber-border/30">
-                                <!-- User history injected via JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
+                
             </div>
         </section>
 
@@ -1562,9 +1669,38 @@
         // MODULE: SOCIAL MINING (X)
         // ============================================================================
         const SocialController = {
+            saveWallet() {
+                const wallet = document.getElementById('sol-wallet-input').value.trim();
+                if (wallet) {
+                    Store.user.address = wallet;
+                    Sys.toast("Wallet address locked. Multiplier tier active.", "success");
+                    this.updateMultiplierUI(Store.user.bals.SPHINX); // Tạm dùng số dư giả lập trong Store
+                }
+            },
+
+            // Hàm tính toán hệ số dựa trên bảng quy đổi mới
+            updateMultiplierUI(balance) {
+                let multi = 1000;
+                let tierName = "Tier 0 (Cộng đồng)";
+                
+                if (balance >= 100000000) { multi = 3000; tierName = "Tier 3 (Cá Voi)"; }
+                else if (balance >= 10000000) { multi = 2000; tierName = "Tier 2 (Cá Mập)"; }
+                else if (balance >= 1000000) { multi = 1500; tierName = "Tier 1 (Cá Heo)"; }
+                
+                const multiEl = document.getElementById('user-multiplier');
+                if(multiEl) {
+                    multiEl.innerText = `${tierName} - x${multi.toLocaleString()}`;
+                }
+                return multi;
+            },
+
             async fetchRealApiData() {
                 if(!Store.user.connected || !Store.user.xUsername) {
                     return Sys.toast("Connect Web3 Wallet and link X first.", "error");
+                }
+                
+                if(!Store.user.address) {
+                    return Sys.toast("Please paste your Solana wallet address first to calculate tier.", "error");
                 }
                 
                 const btn = document.getElementById('btn-sync-api');
@@ -1572,7 +1708,6 @@
                 Sys.toast("Initiating Oracle Sync to fetch X Analytics...", "info");
 
                 try {
-                    // Gọi đến Netlify Function ẩn bằng tên người dùng đã lưu trong Firebase
                     const response = await fetch('/.netlify/functions/sync-x', {
                         method: 'POST',
                         body: JSON.stringify({ username: Store.user.xUsername }),
@@ -1582,14 +1717,11 @@
                     const result = await response.json();
 
                     if (result.success) {
-                        // Cập nhật dữ liệu thật vào Store hiện tại của bạn
                         Store.user.socialStats = result.metrics;
                         this.calcPoints();
                         this.updateUI();
-                        
-                        // Kích hoạt lưu dữ liệu thật lên Firebase database
                         EB.emit('user-update'); 
-                        Sys.toast("REAL DATA SYNCED SUCCESSFULLY", "success");
+                        Sys.toast(`SYNCED! Found ${result.validPosts} valid posts within 30 hours.`, "success");
                     } else {
                         throw new Error(result.error);
                     }
@@ -1602,61 +1734,61 @@
                     }
                 }
             },
+            
             calcPoints() {
                 const s = Store.user.socialStats;
-                // Trọng số tính điểm: View=0.1, Like=2, Reply=5, RT=10
-                s.points = Math.floor((s.views * 0.1) + (s.likes * 2) + (s.replies * 5) + (s.rts * 10));
+                // Điểm cơ sở: View=1, Like=20, Reply=50, RT=100 (Không có Quote vì API v2 gộp chung vào RT/Reply)
+                let basePoints = (s.views * 1) + (s.likes * 20) + (s.replies * 50) + (s.rts * 100);
+                
+                // Chặn trần chống Bot: Tối đa 100,000 điểm gốc mỗi lần sync
+                if (basePoints > 100000) basePoints = 100000;
+
+                // Lấy hệ số thực tế từ ví
+                const multiplier = this.updateMultiplierUI(Store.user.bals.SPHINX);
+                
+                s.points = Math.floor(basePoints * multiplier);
             },
+            
             updateUI() {
                 const unconn = document.getElementById('x-unconnected');
                 const conn = document.getElementById('x-connected');
-                const syncBtn = document.getElementById('btn-sync-api'); // TÌM NÚT SYNC
-                const term = document.getElementById('api-terminal');
+                const syncBtn = document.getElementById('btn-sync-api'); 
                 
                 if(Store.user.connected) {
                     if(unconn) unconn.classList.add('hidden');
                     if(conn) conn.classList.remove('hidden');
-                    
-                    // 1. MỞ KHÓA NÚT BẤM SAU KHI ĐĂNG NHẬP THÀNH CÔNG
                     if(syncBtn) syncBtn.disabled = false;
-                    
-                    // 2. CẬP NHẬT DÒNG CHỮ TRÊN TERMINAL
-                    if(term && term.innerHTML.includes("Waiting for user")) {
-                        term.innerHTML = `> Node connected. Miner Identity: ${Store.user.xUsername}<br>> Ready to fetch real X Analytics.`;
-                    }
                     
                     const userEl = document.getElementById('x-username');
                     if(userEl) userEl.innerText = Store.user.xUsername;
                     
+                    // Điền sẵn ví nếu đã nhập trước đó
+                    if (Store.user.address) {
+                        const walletInput = document.getElementById('sol-wallet-input');
+                        if (walletInput) walletInput.value = Store.user.address;
+                        this.updateMultiplierUI(Store.user.bals.SPHINX);
+                    }
+                    
                     const s = Store.user.socialStats;
-                    const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = Utils.formatNum(val); };
+                    // Thay id element cho khớp với giao diện của bạn[cite: 1]
+                    document.getElementById('stat-views').innerText = Utils.formatNum(s.views);
+                    document.getElementById('stat-likes').innerText = Utils.formatNum(s.likes);
+                    document.getElementById('stat-replies').innerText = Utils.formatNum(s.replies);
+                    document.getElementById('stat-rts').innerText = Utils.formatNum(s.rts);
                     
-                    setVal('social-stat-views', s.views);
-                    setVal('social-stat-likes', s.likes);
-                    setVal('social-stat-replies', s.replies);
-                    setVal('social-stat-rts', s.rts);
-                    setVal('social-user-pts', s.points);
+                    const finalPtsEl = document.getElementById('final-points-daily');
+                    if (finalPtsEl) finalPtsEl.innerText = Utils.formatNum(s.points);
                     
-                    // Tính toán chia sẻ mỏ thưởng
-                    const sharePct = s.points > 0 ? (s.points / (Store.global.totalSocialPts + s.points)) * 100 : 0;
-                    const shareEl = document.getElementById('social-user-share');
-                    if(shareEl) shareEl.innerText = sharePct.toFixed(4) + "%";
+                    // Tính toán chia pool
+                    const sharePct = s.points > 0 ? (s.points / (Store.global.totalSocialPts + s.points)) : 0;
+                    const estPayout = sharePct * Store.global.dailyPool;
                     
-                    const estPayout = (sharePct / 100) * Store.global.dailyPool;
                     const payoutEl = document.getElementById('social-est-payout');
                     if(payoutEl) payoutEl.innerText = Utils.formatNum(Math.floor(estPayout)) + " SPHINX";
                     
-                    const btnDaily = document.getElementById('btn-claim-daily');
-                    if(btnDaily) {
-                        btnDaily.disabled = false;
-                        btnDaily.innerText = "CLAIM DAILY DIVIDEND";
-                        btnDaily.classList.remove('disabled', 'opacity-50', 'bg-gray-700');
-                    }
                 } else {
                     if(unconn) unconn.classList.remove('hidden');
                     if(conn) conn.classList.add('hidden');
-                    
-                    // KHÓA LẠI NÚT KHI ĐĂNG XUẤT
                     if(syncBtn) syncBtn.disabled = true;
                 }
             },
@@ -1928,83 +2060,180 @@
 
 
         // BỘ ĐIỀU KHIỂN DÀNH CHO NGƯỜI CHƠI (USER FRONTEND)
+        // ============================================================================
+        // MODULE: THE ORACLE LOTTERY (GAME-FI RNG)
+        // ============================================================================
         window.OracleController = {
-            countChars(taskId) {
-                const text = document.getElementById(`oracle-draft-${taskId}`).value;
-                const counter = document.getElementById(`oracle-count-${taskId}`);
-                if (counter) {
-                    counter.innerText = `${text.length} / 280`;
-                    counter.className = text.length > 280 ? "font-bold text-red-500" : "font-bold text-cyber-textMuted";
+            config: {
+                depositMultiplier: 50,
+                holdMultiplier: 10,
+                roundDurationSeconds: 7 * 24 * 60 * 60 // 7 Days
+            },
+            
+            state: {
+                status: 'ACTIVE', // START, ACTIVE, END
+                startTime: Date.now() - (2 * 24 * 60 * 60 * 1000), // Started 2 days ago for demo
+                endTime: Date.now() + (5 * 24 * 60 * 60 * 1000),
+                totalPrizePool: 1540000,
+                globalTickets: 8942100
+            },
+            
+            userLottery: {
+                depositAmount: 0,
+                holdAmountSnapshot: 0,
+                autoPoolBalance: 0,
+                autoPoolJoinAmount: 0,
+                depositTickets: 0,
+                holdTickets: 0,
+                totalTickets: 0
+            },
+
+            init() {
+                this.startTimer();
+                this.updateUI();
+                // Lắng nghe sự kiện cập nhật ví để check Anti-Dump liên tục
+                EB.on('user-update', () => this.calculateTickets());
+            },
+
+            calculateTickets() {
+                if(!Store.user.connected) return;
+                
+                const ul = this.userLottery;
+                
+                // 1. Calculate Deposit Tickets
+                ul.depositTickets = ul.depositAmount * this.config.depositMultiplier;
+
+                // 2. Calculate Hold Tickets (Time based)
+                const now = Date.now();
+                let holdDurationRatio = 1; // Default 100% for Auto Pool users
+                
+                if (now > this.state.startTime && now < this.state.endTime && ul.depositAmount > 0) {
+                    // Manual deposit gets pro-rata time ratio
+                    const remainingTime = this.state.endTime - now;
+                    const totalRoundTime = this.state.endTime - this.state.startTime;
+                    holdDurationRatio = remainingTime / totalRoundTime;
+                }
+
+                ul.holdTickets = Math.floor(holdDurationRatio * ul.holdAmountSnapshot * this.config.holdMultiplier);
+
+                // 3. ANTI-DUMP VERIFICATION (PENALTY SYSTEM)
+                const actualBalance = Store.user.bals.SPHINX + ul.autoPoolBalance;
+                const penaltyWarning = document.getElementById('lottery-penalty-warning');
+                
+                if (ul.depositAmount > 0 && actualBalance < ul.holdAmountSnapshot) {
+                    ul.holdTickets = 0; // BURN TICKETS
+                    if(penaltyWarning) penaltyWarning.classList.remove('hidden');
+                } else {
+                    if(penaltyWarning) penaltyWarning.classList.add('hidden');
+                }
+
+                ul.totalTickets = ul.depositTickets + ul.holdTickets;
+                this.updateUI();
+            },
+
+            async depositManual() {
+                if(!Store.user.connected) return Sys.toast("Please Login with X and Web3 Wallet first.", "error");
+                if(this.state.status !== 'ACTIVE') return Sys.toast("Round is not active.", "error");
+
+                const amt = parseFloat(document.getElementById('input-manual-deposit').value);
+                if (isNaN(amt) || amt <= 0) return Sys.toast("Invalid amount.", "error");
+                if (Store.user.bals.SPHINX < amt) return Sys.toast("Insufficient SPHINX balance.", "error");
+
+                const success = await Web3Manager.executeTx('Manual_Deposit_Lottery');
+                if(success) {
+                    Store.user.bals.SPHINX -= amt;
+                    
+                    // Snapshot Logic: Only set Hold Amount on FIRST deposit of the round
+                    if (this.userLottery.depositAmount === 0) {
+                        this.userLottery.holdAmountSnapshot = Store.user.bals.SPHINX + this.userLottery.autoPoolBalance;
+                    }
+
+                    this.userLottery.depositAmount += amt;
+                    this.state.totalPrizePool += amt; // Add to global pool
+                    
+                    document.getElementById('input-manual-deposit').value = "";
+                    this.calculateTickets();
+                    EB.emit('user-update');
+                    Sys.toast(`Successfully deposited ${Utils.formatNum(amt)} SPHINX.`, "success");
                 }
             },
 
-            async submitTask(taskId) {
-                if (!Store.user.connected || !Store.user.xUsername) {
-                    return alert("[AUTH ERROR] Wallet and X (Twitter) connection required to execute missions.");
-                }
+            async fundAutoPool() {
+                if(!Store.user.connected) return Sys.toast("Please Login with X and Web3 Wallet first.", "error");
+                
+                const amt = parseFloat(document.getElementById('input-autopool-deposit').value);
+                if (isNaN(amt) || amt <= 0) return Sys.toast("Invalid amount.", "error");
+                if (Store.user.bals.SPHINX < amt) return Sys.toast("Insufficient balance.", "error");
 
-                const urlInput = document.getElementById(`oracle-url-${taskId}`).value;
-                if (!urlInput || !urlInput.includes("http")) {
-                    return alert("[INVALID DATA] Please provide a valid live URL.");
-                }
-
-                const missionType = taskId === 1 ? "Mission 01: Ecosystem Thread" : "Mission 02: Community Raid";
-                const rewardPts = taskId === 1 ? 5000 : 3000;
-                const now = Date.now();
-                const todayDateString = new Date(now).toDateString();
-
-                try {
-                    // 1. FETCH HISTORY FROM FIREBASE
-                    const q = query(collection(db, "oracle_submissions"), where("userId", "==", Store.user.xUsername));
-                    const snapshot = await getDocs(q);
+                const success = await Web3Manager.executeTx('Fund_Auto_Pool');
+                if(success) {
+                    Store.user.bals.SPHINX -= amt;
+                    this.userLottery.autoPoolBalance += amt;
                     
-                    let todayCount = 0;
-                    let lastSubmitTime = 0;
-
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        if (new Date(data.timestamp).toDateString() === todayDateString) {
-                            todayCount++;
-                        }
-                        if (data.timestamp > lastSubmitTime) {
-                            lastSubmitTime = data.timestamp;
-                        }
-                    });
-
-                    // 2. ANTI-CHEAT & LIMIT CHECK
-                    if (todayCount >= 2) {
-                        return alert("⚠️ [SYSTEM LIMIT] Daily mission quota reached (2/2). Awaiting global reset tomorrow.");
-                    }
-
-                    const hoursSinceLast = (now - lastSubmitTime) / (1000 * 60 * 60);
-                    if (hoursSinceLast < 2) {
-                        const waitTime = Math.ceil((2 - hoursSinceLast) * 60);
-                        return alert(`⏳ [COOLDOWN ACTIVE] Anti-spam protocol engaged. Await ${waitTime} minutes before next execution.`);
-                    }
-
-                    // 3. PUSH DATA TO FIREBASE
-                    await addDoc(collection(db, "oracle_submissions"), {
-                        userId: Store.user.xUsername,
-                        type: missionType,
-                        link: urlInput,
-                        status: "PENDING",
-                        reward: rewardPts,
-                        timestamp: now,
-                        dateStr: new Date(now).toLocaleDateString()
-                    });
-
-                    alert(`✅ Mission payload transmitted successfully! Awaiting Oracle verification.`);
-                    document.getElementById(`oracle-url-${taskId}`).value = ""; 
-                    
-                    // Refresh history UI
-                    if (window.OracleAdmin) window.OracleAdmin.renderUserHistory();
-
-                } catch (error) {
-                    console.error("Submission Failure:", error);
-                    alert("[SYSTEM FAILURE] Database connection lost. Please try again later.");
+                    document.getElementById('input-autopool-deposit').value = "";
+                    this.calculateTickets(); // Re-eval balance for anti-dump
+                    EB.emit('user-update');
+                    Sys.toast(`Auto Pool funded with ${Utils.formatNum(amt)} SPHINX.`, "success");
                 }
+            },
+
+            async setAutoJoin() {
+                const amt = parseFloat(document.getElementById('input-autopool-join').value);
+                if (isNaN(amt) || amt < 0) return Sys.toast("Invalid amount.", "error");
+                
+                this.userLottery.autoPoolJoinAmount = amt;
+                Sys.toast(`Auto-Join set to ${Utils.formatNum(amt)} SPHINX per round.`, "success");
+            },
+
+            updateUI() {
+                const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = typeof val === 'number' ? Utils.formatNum(val) : val; };
+                
+                setVal('lottery-prize-pool', `${Utils.formatNum(this.state.totalPrizePool)} <span class="text-xl">SPHINX</span>`);
+                setVal('lottery-total-tickets', this.state.globalTickets + this.userLottery.totalTickets);
+                
+                // User Stats
+                setVal('user-deposit-tickets', this.userLottery.depositTickets);
+                setVal('user-hold-tickets', this.userLottery.holdTickets);
+                setVal('user-total-tickets', this.userLottery.totalTickets);
+                setVal('user-hold-amount', this.userLottery.holdAmountSnapshot);
+                setVal('auto-pool-balance', this.userLottery.autoPoolBalance);
+                
+                const actualBal = Store.user.connected ? (Store.user.bals.SPHINX + this.userLottery.autoPoolBalance) : 0;
+                setVal('user-actual-balance', actualBal);
+
+                // Win Probability
+                const totalNetTickets = this.state.globalTickets + this.userLottery.totalTickets;
+                const prob = totalNetTickets > 0 ? (this.userLottery.totalTickets / totalNetTickets) * 100 : 0;
+                setVal('lottery-win-prob', prob.toFixed(4) + "%");
+            },
+
+            startTimer() {
+                setInterval(() => {
+                    const now = Date.now();
+                    const diff = this.state.endTime - now;
+                    const timerEl = document.getElementById('lottery-timer');
+                    
+                    if (diff <= 0) {
+                        if(timerEl) timerEl.innerText = "CALCULATING VRF...";
+                        this.state.status = 'END';
+                        document.getElementById('lottery-state').innerText = "END";
+                        return;
+                    }
+                    
+                    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    const m = Math.floor((diff / 1000 / 60) % 60);
+                    const s = Math.floor((diff / 1000) % 60);
+                    
+                    if(timerEl) timerEl.innerText = `${d}D ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                }, 1000);
             }
         };
+
+        // Kích hoạt Lottery khi trang web tải xong
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.OracleController) window.OracleController.init();
+        });
 
         // MODULE: ARMY RANKS (FIREBASE SYNC & MOBILE RESPONSIVE)
         // ============================================================================
