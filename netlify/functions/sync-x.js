@@ -8,7 +8,6 @@ exports.handler = async function(event, context) {
         const body = JSON.parse(event.body);
         const username = body.username.replace('@', '');
         
-        // Lấy bộ đôi chìa khóa OAuth 2.0 từ Netlify
         const CLIENT_ID = process.env.X_CLIENT_ID;
         const CLIENT_SECRET = process.env.X_CLIENT_SECRET;
 
@@ -16,7 +15,6 @@ exports.handler = async function(event, context) {
             throw new Error("Hệ thống thiếu OAuth 2.0 Client ID hoặc Secret.");
         }
 
-        // BƯỚC 1 CỦA OAUTH 2.0: ĐỔI CLIENT ID & SECRET LẤY TOKEN ĐỘNG
         const credentials = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
         const tokenResponse = await fetch('https://api.twitter.com/oauth2/token', {
             method: 'POST',
@@ -34,20 +32,19 @@ exports.handler = async function(event, context) {
         
         const dynamicToken = tokenData.access_token;
 
-        // BƯỚC 2: DÙNG TOKEN ĐỘNG ĐỂ GỌI API LẤY ID NGƯỜI DÙNG
         const userRes = await fetch(`https://api.twitter.com/2/users/by/username/${username}`, {
             headers: { 'Authorization': `Bearer ${dynamicToken}` }
         });
         const userData = await userRes.json();
         
         if (userData.errors || !userData.data) {
-            throw new Error("Không tìm thấy User hoặc API bị khóa quyền Đọc (Lỗi Free Tier).");
+            throw new Error("Không tìm thấy User hoặc API bị khóa quyền.");
         }
         
         const userId = userData.data.id;
 
-        // BƯỚC 3: QUÉT BÀI ĐĂNG TÌM CASHTAG $SPHINX
-        const tweetsRes = await fetch(`https://api.twitter.com/2/users/${userId}/tweets?max_results=100&tweet.fields=public_metrics&exclude=retweets,replies`, {
+        // ĐÃ SỬA: Thêm "created_at" vào tweet.fields để lấy thời gian đăng bài
+        const tweetsRes = await fetch(`https://api.twitter.com/2/users/${userId}/tweets?max_results=100&tweet.fields=public_metrics,created_at&exclude=retweets,replies`, {
             headers: { 'Authorization': `Bearer ${dynamicToken}` }
         });
         const tweetsData = await tweetsRes.json();
@@ -55,15 +52,25 @@ exports.handler = async function(event, context) {
         let totalViews = 0, totalLikes = 0, totalReplies = 0, totalReposts = 0;
         let validTweetsCount = 0;
         
+        const now = new Date().getTime();
+        const MAX_AGE_MS = 30 * 60 * 60 * 1000; // 30 tiếng tính bằng mili-giây
+
         if (tweetsData.data) {
             tweetsData.data.forEach(tweet => {
+                // ĐÃ SỬA: Lọc chữ $sphinx và lọc thời gian 30 tiếng
                 if (tweet.text && tweet.text.toLowerCase().includes("$sphinx")) {
-                    const metrics = tweet.public_metrics;
-                    totalViews += (metrics.impression_count || 0);
-                    totalLikes += (metrics.like_count || 0);
-                    totalReplies += (metrics.reply_count || 0);
-                    totalReposts += (metrics.retweet_count || 0);
-                    validTweetsCount++;
+                    const tweetTime = new Date(tweet.created_at).getTime();
+                    const age = now - tweetTime;
+                    
+                    // Nếu bài đăng nhỏ hơn hoặc bằng 30 tiếng mới tính điểm
+                    if (age <= MAX_AGE_MS) {
+                        const metrics = tweet.public_metrics;
+                        totalViews += (metrics.impression_count || 0);
+                        totalLikes += (metrics.like_count || 0);
+                        totalReplies += (metrics.reply_count || 0);
+                        totalReposts += (metrics.retweet_count || 0);
+                        validTweetsCount++;
+                    }
                 }
             });
         }
