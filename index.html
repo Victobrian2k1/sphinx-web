@@ -313,6 +313,75 @@
         
         #meme-workspace { position: relative; width: 100%; aspect-ratio: 1/1; background: #050505; overflow: hidden; border: 1px solid var(--border-glass); }
         #meme-canvas { width: 100%; height: 100%; touch-action: none; }
+
+        /* =========================================
+        8. LOTTERY HUD EFFECTS (CYBERPUNK RADAR)
+        ========================================= */
+        .radar-container {
+            position: relative;
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 240, 255, 0.2);
+            background: radial-gradient(circle, rgba(0,240,255,0.05) 0%, transparent 70%);
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.1), inset 0 0 40px rgba(0, 240, 255, 0.1);
+        }
+        .radar-sweep {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 50%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-accent));
+            transform-origin: left center;
+            animation: radar-spin 4s linear infinite;
+            box-shadow: 0 0 10px var(--color-accent);
+        }
+        .radar-sweep::after {
+            content: ''; position: absolute;
+            top: -140px; right: 0; width: 140px; height: 280px;
+            background: conic-gradient(from 90deg, rgba(0,240,255,0.4), transparent 60deg);
+            transform-origin: bottom left;
+        }
+        .radar-grid {
+            position: absolute; inset: 0;
+            background-image: 
+                linear-gradient(rgba(0,240,255,0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,240,255,0.2) 1px, transparent 1px);
+            background-size: 40px 40px; background-position: center center;
+            border-radius: 50%;
+        }
+        @keyframes radar-spin { 100% { transform: rotate(360deg); } }
+
+        /* Custom Range Slider for Auto Pool */
+        .cyber-slider {
+            -webkit-appearance: none; 
+            appearance: none; /* Thêm dòng này để hết báo vàng */
+            width: 100%; 
+            height: 6px;
+            background: rgba(0,255,102,0.2); 
+            outline: none; 
+            border: 1px solid var(--border-glass);
+            border-radius: 4px; 
+            overflow: hidden;
+        }
+        
+        .cyber-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; 
+            appearance: none; /* Thêm dòng này để hết báo vàng */
+            width: 16px; 
+            height: 16px; 
+            background: var(--color-success);
+            cursor: pointer; 
+            box-shadow: -400px 0 0 400px rgba(0,255,102,0.6);
+            border: 2px solid #fff; 
+            transform: skewX(-10deg);
+        }
+        .scrolling-blocks {
+            height: 120px; overflow: hidden; position: relative;
+        }
+        .scrolling-blocks-inner {
+            animation: scroll-up 10s linear infinite;
+        }
+        @keyframes scroll-up { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
     </style>
 </head>
 <body class="selection:bg-cyber-primary selection:text-white">
@@ -1102,136 +1171,196 @@
 
         <!-- VIEW 4: SPHINX LOTTERY PROTOCOL (GAME-FI) -->
         <section id="view-oracle" class="view-layer py-12 px-4 hidden flex-grow w-full relative">
-            <div class="max-w-[1000px] mx-auto">
+            <div class="max-w-[1400px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6">
                 
-                <!-- Header -->
-                <div class="flex justify-between items-end mb-6">
-                    <h2 class="font-orbitron text-3xl md:text-4xl font-black text-white text-glow-primary">
-                        ROUND <span id="lottery-round-id">19</span>
-                    </h2>
-                    <div class="bg-cyber-primary/10 border border-cyber-primary px-3 py-1 font-mono text-xs text-cyber-primary rounded flex items-center gap-2">
-                        <span class="animate-ping h-2 w-2 rounded-full bg-cyber-primary"></span>
-                        SOLANA DEVNET
-                    </div>
-                </div>
-
-                <!-- MÔ PHỎNG UI CHUẨN DAPP (Giống hình mẫu) -->
-                <div class="cyber-panel bg-[#0a0a0c] border border-cyber-border mb-8 overflow-hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-cyber-border/50 font-mono text-sm">
+                <!-- HEADER TRUNG TÂM & RADAR (COL 1 - 4) -->
+                <div class="xl:col-span-4 flex flex-col gap-6">
+                    <div class="cyber-panel p-6 border-t-4 border-t-cyber-accent text-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                         
-                        <!-- Cột trái: Thông số thời gian & Block -->
-                        <div class="p-6 space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-cyber-textMuted">Start Block</span>
-                                <div class="text-right">
-                                    <span class="text-white" id="stat-start-block">Loading...</span><br>
-                                    <span class="text-[10px] text-cyber-xBlue" id="stat-start-time">---</span>
+                        <h2 class="font-orbitron text-3xl font-black text-white text-glow-accent tracking-widest mb-1">THE_ORACLE</h2>
+                        <div class="font-mono text-[10px] text-cyber-accent tracking-[0.3em] mb-6 border-b border-cyber-border/50 pb-4">VRF LOTTERY PROTOCOL</div>
+                        
+                        <!-- Radar UI -->
+                        <div class="flex justify-center mb-6 relative">
+                            <div class="radar-container">
+                                <div class="radar-grid"></div>
+                                <div class="radar-sweep"></div>
+                                <!-- Core Text inside Radar -->
+                                <div class="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+                                    <span class="font-mono text-xs text-cyber-textMuted uppercase mb-1">Round 01</span>
+                                    <span class="font-orbitron font-black text-2xl text-white drop-shadow-[0_0_10px_#fff]" id="hud-timer">05:12:44:00</span>
+                                    <span class="font-mono text-[9px] text-cyber-success mt-1 animate-pulse">NETWORK SYNCED</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-cyber-textMuted">End Block</span>
-                                <div class="text-right">
-                                    <span class="text-white" id="stat-end-block">Loading...</span><br>
-                                    <span class="text-[10px] text-cyber-xBlue" id="stat-end-time">---</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-cyber-textMuted">Duration</span>
-                                <span class="text-white"><span id="stat-duration-blocks">0</span> blocks (7 days)</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-cyber-textMuted">Total Tickets</span>
-                                <span class="text-white font-bold" id="stat-total-tickets">0</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-cyber-textMuted">Number of Players</span>
-                                <span class="text-white" id="stat-players">0</span>
                             </div>
                         </div>
 
-                        <!-- Cột phải: Phân bổ dòng tiền -->
-                        <div class="p-6 space-y-3">
-                            <div class="flex justify-between border-b border-cyber-border/50 pb-2 mb-2">
-                                <span class="text-cyber-textMuted">Total Deposits</span>
-                                <div class="text-right">
-                                    <span class="text-white font-bold" id="fund-total">0 SPHINX</span>
-                                    <span class="text-cyber-success ml-2 text-xs" id="fund-total-usd">$0.00</span>
+                        <!-- Real-time Block Scanner -->
+                        <div class="bg-black/80 border border-cyber-border p-3 rounded text-left font-mono text-[10px] text-cyber-textMuted relative">
+                            <div class="flex justify-between items-center border-b border-cyber-border/50 pb-1 mb-2">
+                                <span class="text-cyber-accent font-bold">LIVE BLOCKCHAIN SCANNER</span>
+                                <span class="text-cyber-success flex items-center gap-1"><div class="w-1.5 h-1.5 bg-cyber-success rounded-full animate-ping"></div> CONNECTED</span>
+                            </div>
+                            <div class="scrolling-blocks">
+                                <div class="scrolling-blocks-inner text-cyber-textMuted space-y-1" id="block-feed">
+                                    <!-- JS will populate this to look like hacking -->
                                 </div>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-cyber-textMuted">Prize Pool (70%)</span>
-                                <div class="text-right">
-                                    <span class="text-cyber-gold font-bold" id="fund-prize">0 SPHINX</span>
-                                    <span class="text-cyber-success ml-2 text-xs" id="fund-prize-usd">$0.00</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-cyber-textMuted">NFT Holders (20%)</span>
-                                <div class="text-right">
-                                    <span class="text-white" id="fund-nft">0 SPHINX</span>
-                                    <span class="text-cyber-success ml-2 text-xs" id="fund-nft-usd">$0.00</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-cyber-textMuted">Operation (10%)</span>
-                                <div class="text-right">
-                                    <span class="text-white" id="fund-ops">0 SPHINX</span>
-                                    <span class="text-cyber-success ml-2 text-xs" id="fund-ops-usd">$0.00</span>
-                                </div>
-                            </div>
+                            <div class="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-black to-transparent"></div>
                         </div>
                     </div>
                     
-                    <!-- Bảng xếp hạng trúng thưởng (Prizes) -->
-                    <div class="border-t border-cyber-border/50 bg-black/40 p-6">
-                        <h3 class="text-center font-orbitron text-xl text-white mb-6 uppercase tracking-widest">Prizes (Round 18)</h3>
-                        <div class="max-w-[600px] mx-auto font-mono text-sm space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-cyber-xBlue">0x7c46...59B9</span>
-                                <span class="text-white font-bold">24,934.00 SPHINX</span>
-                                <span class="text-cyber-success">$24.55</span>
+                    <!-- Global Prize Pool Overview -->
+                    <div class="cyber-panel p-6 border border-cyber-gold/50 shadow-[0_0_30px_rgba(255,215,0,0.1)] bg-gradient-to-br from-[#1a1600] to-black">
+                        <div class="text-xs font-mono text-cyber-textMuted mb-2 uppercase tracking-widest text-center">GLOBAL PRIZE POOL</div>
+                        <div class="text-4xl font-orbitron font-black text-cyber-gold text-glow-gold text-center mb-6">1,540,000 <span class="text-xl">SPHINX</span></div>
+                        
+                        <div class="space-y-3 font-mono text-xs">
+                            <div class="flex justify-between items-center bg-black/40 p-2 border border-cyber-border/50">
+                                <span class="text-cyber-textMuted">Winners (70%)</span>
+                                <span class="text-cyber-gold font-bold">1,078,000 SPHINX</span>
                             </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-cyber-xBlue">0x6F41...7287</span>
-                                <span class="text-white font-bold">14,960.40 SPHINX</span>
-                                <span class="text-cyber-success">$14.73</span>
+                            <div class="flex justify-between items-center bg-black/40 p-2 border border-cyber-border/50">
+                                <span class="text-cyber-textMuted">NFT Dividend (20%)</span>
+                                <span class="text-white font-bold">308,000 SPHINX</span>
                             </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-cyber-xBlue">0x1A22...99C1</span>
-                                <span class="text-white font-bold">9,973.60 SPHINX</span>
-                                <span class="text-cyber-success">$9.82</span>
+                            <div class="flex justify-between items-center bg-black/40 p-2 border border-cyber-border/50">
+                                <span class="text-cyber-textMuted">Burn/Ops (10%)</span>
+                                <span class="text-red-400 font-bold">154,000 SPHINX</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- KHU VỰC KẾT NỐI VÍ & NẠP (Chỉ hiện khi chưa kết nối ví) -->
-                <div id="lottery-wallet-section" class="cyber-panel p-8 text-center border-cyber-accent">
-                    <h3 class="font-orbitron text-2xl text-white mb-4">CONNECT WALLET TO JOIN</h3>
-                    <p class="font-mono text-cyber-textMuted text-sm mb-6">Connect your Phantom wallet on Solana Devnet to mint testnet tokens and join the auto-pool.</p>
-                    <button onclick="Web3Manager.connectPhantom()" class="bg-[#AB9FF2] text-black font-orbitron font-bold px-8 py-3 rounded hover:scale-105 transition-transform flex items-center justify-center gap-3 mx-auto">
-                        <img src="https://cryptologos.cc/logos/phantom-logo.png" class="w-6 h-6" alt="Phantom">
-                        CONNECT PHANTOM
-                    </button>
-                </div>
+                <!-- MODULE NGƯỜI CHƠI & AUTO POOL (COL 5 - 12) -->
+                <div class="xl:col-span-8 flex flex-col gap-6">
+                    
+                    <!-- BẢNG GIẢI THÍCH MINH BẠCH (TRANSPARENCY PROTOCOL) -->
+                    <div class="cyber-panel p-6 border border-cyber-border bg-[#050505]">
+                        <h3 class="font-orbitron text-lg text-white mb-4 flex items-center gap-2 border-b border-cyber-border/50 pb-2">
+                            <svg class="w-5 h-5 text-cyber-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            TRANSPARENCY PROTOCOL
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono">
+                            <div class="bg-black/50 p-4 border border-cyber-border/30 rounded relative group hover:border-cyber-primary transition-colors">
+                                <div class="text-cyber-primary text-2xl font-orbitron font-black mb-1 opacity-50 absolute top-2 right-3">1</div>
+                                <div class="text-xs text-white font-bold mb-2 uppercase relative z-10">Deposit & Lock</div>
+                                <div class="text-[10px] text-cyber-textMuted relative z-10">Users deposit SPHINX. The smart contract snapshots your wallet balance exactly at this block.</div>
+                            </div>
+                            <div class="bg-black/50 p-4 border border-cyber-border/30 rounded relative group hover:border-cyber-accent transition-colors">
+                                <div class="text-cyber-accent text-2xl font-orbitron font-black mb-1 opacity-50 absolute top-2 right-3">2</div>
+                                <div class="text-xs text-white font-bold mb-2 uppercase relative z-10">Anti-Dump Radar</div>
+                                <div class="text-[10px] text-cyber-textMuted relative z-10">If you sell SPHINX and your balance drops below the snapshot, your Hold Tickets are burned to 0.</div>
+                            </div>
+                            <div class="bg-black/50 p-4 border border-cyber-border/30 rounded relative group hover:border-cyber-gold transition-colors">
+                                <div class="text-cyber-gold text-2xl font-orbitron font-black mb-1 opacity-50 absolute top-2 right-3">3</div>
+                                <div class="text-xs text-white font-bold mb-2 uppercase relative z-10">VRF Number Gen</div>
+                                <div class="text-[10px] text-cyber-textMuted relative z-10">At round end, Switchboard VRF securely generates a random hash on-chain. Impossible to manipulate.</div>
+                            </div>
+                            <div class="bg-black/50 p-4 border border-cyber-border/30 rounded relative group hover:border-cyber-success transition-colors">
+                                <div class="text-cyber-success text-2xl font-orbitron font-black mb-1 opacity-50 absolute top-2 right-3">4</div>
+                                <div class="text-xs text-white font-bold mb-2 uppercase relative z-10">Auto Payout</div>
+                                <div class="text-[10px] text-cyber-textMuted relative z-10">The smart contract instantly routes 70% of the pool to winning wallets based on the VRF hash.</div>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- KHU VỰC SAU KHI KẾT NỐI VÍ (Auto Pool & Manual) -->
-                <div id="lottery-action-section" class="hidden grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Giữ nguyên khối Auto Pool và Manual Deposit như bản trước, chỉ thay đổi ID cho phù hợp -->
-                    <div class="cyber-panel p-6 border border-cyber-success">
-                        <h3 class="font-orbitron text-lg text-cyber-success font-bold mb-4">AUTO POOL (TESTNET)</h3>
-                        <div class="flex justify-between font-mono text-xs mb-4 text-cyber-textMuted">
-                            <span>Wallet Balance:</span>
-                            <span class="text-white font-bold"><span id="sol-wallet-balance">0</span> SPHINX</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- KHU VỰC CỦA NGƯỜI CHƠI (TICKETS RADAR) -->
+                        <div class="cyber-panel p-6 border-t-2 border-cyber-accent bg-black/60 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-orbitron text-lg text-white mb-2 uppercase">Your Tickets Radar</h3>
+                                <p class="font-mono text-[10px] text-cyber-textMuted mb-6">Deposit + Hold SPHINX to maximize your winning probability.</p>
+                                
+                                <!-- HUD Warning -->
+                                <div id="demo-warning" class="hidden bg-red-500/10 border border-red-500 p-3 rounded font-mono text-[10px] text-red-400 mb-6 flex items-center gap-2">
+                                    <span class="animate-ping h-2 w-2 bg-red-500 rounded-full"></span>
+                                    ANTI-DUMP TRIGGERED: BALANCE DROPPED. HOLD TICKETS BURNED!
+                                </div>
+
+                                <div class="space-y-4 font-mono text-sm mb-6">
+                                    <div class="flex justify-between items-center border-b border-cyber-border/30 pb-2">
+                                        <span class="text-cyber-textMuted">Deposit Tickets:</span>
+                                        <span class="text-white font-bold" id="demo-dep-tickets">0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-cyber-border/30 pb-2">
+                                        <span class="text-cyber-textMuted">Hold Tickets (Time based):</span>
+                                        <span class="text-cyber-success font-bold" id="demo-hold-tickets">0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-cyber-accent/10 p-3 border border-cyber-accent/30 rounded">
+                                        <span class="font-orbitron font-bold text-cyber-accent tracking-widest">TOTAL TICKETS</span>
+                                        <span class="font-orbitron font-black text-2xl text-cyber-accent" id="demo-total-tickets">0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 font-mono text-[10px] text-cyber-textMuted bg-[#0a0a0c] p-3 border border-cyber-border/50">
+                                <div>
+                                    Snapshot Balance:<br>
+                                    <span class="text-white font-bold text-sm" id="demo-snapshot">0</span>
+                                </div>
+                                <div class="text-right border-l border-cyber-border/50 pl-2">
+                                    Winning Probability:<br>
+                                    <span class="text-cyber-gold font-bold text-sm" id="demo-prob">0.00%</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex gap-2 mb-4">
-                            <input type="number" id="test-deposit-amt" class="w-full input-tech p-3 font-mono text-sm" placeholder="Amount...">
-                            <button onclick="OracleController.depositTestnet()" class="bg-cyber-success text-black font-bold px-6">DEPOSIT</button>
+
+                        <!-- KHU VỰC TƯƠNG TÁC (AUTO POOL & DEPOSIT) -->
+                        <div class="cyber-panel p-6 border-t-2 border-cyber-success bg-gradient-to-b from-[rgba(0,255,102,0.05)] to-black space-y-6">
+                                                
+                            <!-- [MỚI THÊM] HIỂN THỊ SỐ DƯ & NÚT FAUCET -->
+                            <div class="flex justify-between items-center border-b border-cyber-border/30 pb-3">
+                                <div class="font-mono text-xs text-cyber-textMuted">
+                                    Wallet: <span class="text-white font-bold text-sm" id="lottery-wallet-bal">0</span> SPHINX
+                                </div>
+                                <button onclick="Web3Manager.airdropTestTokens()" class="text-[10px] font-mono bg-cyber-xBlue/10 text-cyber-xBlue border border-cyber-xBlue/30 px-3 py-1 hover:bg-cyber-xBlue hover:text-white transition-colors cursor-pointer">
+                                    [+] FAUCET 50K SPHINX
+                                </button>
+                            </div>
+
+                            <!-- AUTO POOL MODULE -->
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="font-orbitron text-lg text-cyber-success font-bold uppercase">Auto Pool Core</h3>
+                                    <span class="text-[9px] bg-cyber-success/20 text-cyber-success px-2 py-1 font-mono border border-cyber-success/30">RECOMMENDED</span>
+                                </div>
+                                <p class="font-mono text-[10px] text-cyber-textMuted mb-4">Auto-join at Block #0. Guarantees 100% Hold Duration multiplier.</p>
+                                
+                                <div class="bg-black border border-cyber-border p-4 rounded mb-4">
+                                    <div class="flex justify-between font-mono text-xs mb-2">
+                                        <span class="text-cyber-textMuted">Fund Auto Pool:</span>
+                                        <span class="text-white font-bold"><span id="demo-slider-val">50,000</span> SPHINX</span>
+                                    </div>
+                                    <input type="range" min="0" max="500000" step="1000" value="50000" class="cyber-slider" id="demo-autopool-slider" oninput="LotteryDemo.updateSlider()">
+                                </div>
+                                
+                                <button onclick="LotteryDemo.simulateAutoPool()" class="w-full bg-cyber-success text-black font-orbitron font-bold py-3 hover:brightness-110 hover:shadow-[0_0_15px_#00FF66] transition-all">
+                                    ACTIVATE AUTO POOL
+                                </button>
+                            </div>
+
+                            <div class="relative w-full h-px bg-cyber-border/50">
+                                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black px-2 font-mono text-[10px] text-cyber-textMuted">OR</span>
+                            </div>
+
+                            <!-- MANUAL DEPOSIT -->
+                            <div>
+                                <h3 class="font-orbitron text-sm text-white mb-2 uppercase">Manual Entry (Late Join)</h3>
+                                <div class="flex gap-2">
+                                    <input type="number" id="demo-manual-input" class="w-full input-tech p-3 font-mono text-sm" placeholder="Enter SPHINX...">
+                                    <button onclick="LotteryDemo.simulateManual()" class="bg-transparent border border-cyber-border text-white hover:border-cyber-primary hover:text-cyber-primary font-orbitron font-bold px-6 transition-colors">
+                                        INJECT
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button onclick="LotteryDemo.triggerAntiDump()" class="w-full bg-red-500/10 border border-red-500/50 text-red-500 text-[10px] font-mono py-2 hover:bg-red-500 hover:text-black transition-colors">
+                                [TEST] SIMULATE DUMPING TOKEN
+                            </button>
                         </div>
-                        <button onclick="Web3Manager.airdropTestTokens()" class="w-full border border-cyber-border text-cyber-textMuted py-2 text-xs font-mono hover:text-white">FAUCET: GET 1000 TEST SPHINX</button>
                     </div>
                 </div>
-
             </div>
         </section>
 
@@ -1376,9 +1505,7 @@
                 <span class="text-[8px] font-orbitron font-bold">ARMY</span>
         </button>
     </nav>
-
-    </main>
-
+    
     <!-- Global Toasts -->
     <div id="toast-container"></div>
 
@@ -2057,182 +2184,8 @@
             }
         };
 
-
-        // BỘ ĐIỀU KHIỂN DÀNH CHO NGƯỜI CHƠI (USER FRONTEND)
-        // ============================================================================
-        // MODULE: THE ORACLE LOTTERY (GAME-FI RNG)
-        // ============================================================================
-        window.OracleController = {
-            config: {
-                depositMultiplier: 50,
-                holdMultiplier: 10,
-                roundDurationSeconds: 7 * 24 * 60 * 60 // 7 Days
-            },
-            
-            state: {
-                status: 'ACTIVE', // START, ACTIVE, END
-                startTime: Date.now() - (2 * 24 * 60 * 60 * 1000), // Started 2 days ago for demo
-                endTime: Date.now() + (5 * 24 * 60 * 60 * 1000),
-                totalPrizePool: 1540000,
-                globalTickets: 8942100
-            },
-            
-            userLottery: {
-                depositAmount: 0,
-                holdAmountSnapshot: 0,
-                autoPoolBalance: 0,
-                autoPoolJoinAmount: 0,
-                depositTickets: 0,
-                holdTickets: 0,
-                totalTickets: 0
-            },
-
-            init() {
-                this.startTimer();
-                this.updateUI();
-                // Lắng nghe sự kiện cập nhật ví để check Anti-Dump liên tục
-                EB.on('user-update', () => this.calculateTickets());
-            },
-
-            calculateTickets() {
-                if(!Store.user.connected) return;
-                
-                const ul = this.userLottery;
-                
-                // 1. Calculate Deposit Tickets
-                ul.depositTickets = ul.depositAmount * this.config.depositMultiplier;
-
-                // 2. Calculate Hold Tickets (Time based)
-                const now = Date.now();
-                let holdDurationRatio = 1; // Default 100% for Auto Pool users
-                
-                if (now > this.state.startTime && now < this.state.endTime && ul.depositAmount > 0) {
-                    // Manual deposit gets pro-rata time ratio
-                    const remainingTime = this.state.endTime - now;
-                    const totalRoundTime = this.state.endTime - this.state.startTime;
-                    holdDurationRatio = remainingTime / totalRoundTime;
-                }
-
-                ul.holdTickets = Math.floor(holdDurationRatio * ul.holdAmountSnapshot * this.config.holdMultiplier);
-
-                // 3. ANTI-DUMP VERIFICATION (PENALTY SYSTEM)
-                const actualBalance = Store.user.bals.SPHINX + ul.autoPoolBalance;
-                const penaltyWarning = document.getElementById('lottery-penalty-warning');
-                
-                if (ul.depositAmount > 0 && actualBalance < ul.holdAmountSnapshot) {
-                    ul.holdTickets = 0; // BURN TICKETS
-                    if(penaltyWarning) penaltyWarning.classList.remove('hidden');
-                } else {
-                    if(penaltyWarning) penaltyWarning.classList.add('hidden');
-                }
-
-                ul.totalTickets = ul.depositTickets + ul.holdTickets;
-                this.updateUI();
-            },
-
-            async depositManual() {
-                if(!Store.user.connected) return Sys.toast("Please Login with X and Web3 Wallet first.", "error");
-                if(this.state.status !== 'ACTIVE') return Sys.toast("Round is not active.", "error");
-
-                const amt = parseFloat(document.getElementById('input-manual-deposit').value);
-                if (isNaN(amt) || amt <= 0) return Sys.toast("Invalid amount.", "error");
-                if (Store.user.bals.SPHINX < amt) return Sys.toast("Insufficient SPHINX balance.", "error");
-
-                const success = await Web3Manager.executeTx('Manual_Deposit_Lottery');
-                if(success) {
-                    Store.user.bals.SPHINX -= amt;
-                    
-                    // Snapshot Logic: Only set Hold Amount on FIRST deposit of the round
-                    if (this.userLottery.depositAmount === 0) {
-                        this.userLottery.holdAmountSnapshot = Store.user.bals.SPHINX + this.userLottery.autoPoolBalance;
-                    }
-
-                    this.userLottery.depositAmount += amt;
-                    this.state.totalPrizePool += amt; // Add to global pool
-                    
-                    document.getElementById('input-manual-deposit').value = "";
-                    this.calculateTickets();
-                    EB.emit('user-update');
-                    Sys.toast(`Successfully deposited ${Utils.formatNum(amt)} SPHINX.`, "success");
-                }
-            },
-
-            async fundAutoPool() {
-                if(!Store.user.connected) return Sys.toast("Please Login with X and Web3 Wallet first.", "error");
-                
-                const amt = parseFloat(document.getElementById('input-autopool-deposit').value);
-                if (isNaN(amt) || amt <= 0) return Sys.toast("Invalid amount.", "error");
-                if (Store.user.bals.SPHINX < amt) return Sys.toast("Insufficient balance.", "error");
-
-                const success = await Web3Manager.executeTx('Fund_Auto_Pool');
-                if(success) {
-                    Store.user.bals.SPHINX -= amt;
-                    this.userLottery.autoPoolBalance += amt;
-                    
-                    document.getElementById('input-autopool-deposit').value = "";
-                    this.calculateTickets(); // Re-eval balance for anti-dump
-                    EB.emit('user-update');
-                    Sys.toast(`Auto Pool funded with ${Utils.formatNum(amt)} SPHINX.`, "success");
-                }
-            },
-
-            async setAutoJoin() {
-                const amt = parseFloat(document.getElementById('input-autopool-join').value);
-                if (isNaN(amt) || amt < 0) return Sys.toast("Invalid amount.", "error");
-                
-                this.userLottery.autoPoolJoinAmount = amt;
-                Sys.toast(`Auto-Join set to ${Utils.formatNum(amt)} SPHINX per round.`, "success");
-            },
-
-            updateUI() {
-                const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = typeof val === 'number' ? Utils.formatNum(val) : val; };
-                
-                setVal('lottery-prize-pool', `${Utils.formatNum(this.state.totalPrizePool)} <span class="text-xl">SPHINX</span>`);
-                setVal('lottery-total-tickets', this.state.globalTickets + this.userLottery.totalTickets);
-                
-                // User Stats
-                setVal('user-deposit-tickets', this.userLottery.depositTickets);
-                setVal('user-hold-tickets', this.userLottery.holdTickets);
-                setVal('user-total-tickets', this.userLottery.totalTickets);
-                setVal('user-hold-amount', this.userLottery.holdAmountSnapshot);
-                setVal('auto-pool-balance', this.userLottery.autoPoolBalance);
-                
-                const actualBal = Store.user.connected ? (Store.user.bals.SPHINX + this.userLottery.autoPoolBalance) : 0;
-                setVal('user-actual-balance', actualBal);
-
-                // Win Probability
-                const totalNetTickets = this.state.globalTickets + this.userLottery.totalTickets;
-                const prob = totalNetTickets > 0 ? (this.userLottery.totalTickets / totalNetTickets) * 100 : 0;
-                setVal('lottery-win-prob', prob.toFixed(4) + "%");
-            },
-
-            startTimer() {
-                setInterval(() => {
-                    const now = Date.now();
-                    const diff = this.state.endTime - now;
-                    const timerEl = document.getElementById('lottery-timer');
-                    
-                    if (diff <= 0) {
-                        if(timerEl) timerEl.innerText = "CALCULATING VRF...";
-                        this.state.status = 'END';
-                        document.getElementById('lottery-state').innerText = "END";
-                        return;
-                    }
-                    
-                    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                    const m = Math.floor((diff / 1000 / 60) % 60);
-                    const s = Math.floor((diff / 1000) % 60);
-                    
-                    if(timerEl) timerEl.innerText = `${d}D ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                }, 1000);
-            }
-        };
-
-        // Kích hoạt Lottery khi trang web tải xong
-        document.addEventListener('DOMContentLoaded', () => {
-            if(window.OracleController) window.OracleController.init();
-        });
+        // Kích hoạt khi trang Load (Thêm dòng này vào EventListener DOMContentLoaded)
+        // window.LotteryDemo.init();
 
         // MODULE: ARMY RANKS (FIREBASE SYNC & MOBILE RESPONSIVE)
         // ============================================================================
@@ -2260,12 +2213,10 @@
                                 this.dbData.push({
                                     xUsername: Store.user.xUsername,
                                     pts: Store.user.pts,
-                                    wallet: Store.user.address // Giữ lại dự phòng nếu sau này cần
+                                    wallet: Store.user.address
                                 });
-                                // Sắp xếp lại danh sách sau khi thêm
                                 this.dbData.sort((a, b) => (b.pts || 0) - (a.pts || 0));
                             } else {
-                                // Cập nhật điểm mới nhất nếu đã có trong danh sách
                                 const myIndex = this.dbData.findIndex(u => u.xUsername === Store.user.xUsername);
                                 if(myIndex !== -1) {
                                     this.dbData[myIndex].pts = Store.user.pts;
@@ -2307,7 +2258,6 @@
                     let rankObj = Store.ranks.slice().reverse().find(r => totalPts >= r.min) || Store.ranks[0];
                     
                     const isTop = i < 3;
-                    // Cập nhật logic isMe để kiểm tra qua xUsername
                     const isMe = Store.user.connected && Store.user.xUsername && (u.xUsername === Store.user.xUsername);
                     
                     const meStyles = isMe ? 'bg-cyber-primary/10 border-l-4 border-cyber-primary' : 'hover:bg-white/5 border-l-4 border-transparent';
@@ -2405,7 +2355,6 @@
                 const list = document.getElementById('activity-feed');
                 if(!list) return;
                 
-                // Set badge colors based on activity type
                 let badgeColor = 'text-cyber-textMuted border-cyber-textMuted';
                 if(type === 'SWAP') badgeColor = 'text-cyber-success border-cyber-success bg-cyber-success/10';
                 if(type === 'ORACLE') badgeColor = 'text-cyber-primary border-cyber-primary bg-cyber-primary/10';
@@ -2459,10 +2408,11 @@
             loop();
         };
 
-        // XUẤT CÁC MODULE RA TOÀN CỤC CHO HTML GỌI ĐƯỢC
-        // TẠO HỆ THỐNG VÍ GIẢ LẬP ĐỂ KHÔNG BỊ LỖI KHI BẤM NÚT
         // ============================================================================
-        // MODULE: REAL SOLANA WEB3 CONNECTION (DEVNET)
+        // MODULE: REAL SOLANA WEB3 CONNECTION (DEVNET & DEMO HUD)
+        // ============================================================================
+        // ============================================================================
+        // MODULE: REAL SOLANA WEB3 CONNECTION (DEVNET & DEMO HUD)
         // ============================================================================
         const Web3Manager = {
             connection: null,
@@ -2485,6 +2435,7 @@
                     const resp = await window.solana.connect();
                     this.walletAddress = resp.publicKey.toString();
                     Store.user.address = this.walletAddress;
+                    Store.user.connected = true; 
                     
                     Sys.toast(`Connected: ${Utils.shortAddr(this.walletAddress)}`, "success");
                     
@@ -2493,7 +2444,7 @@
                     document.getElementById('lottery-action-section').classList.add('grid');
                     
                     EB.emit('user-update');
-                    OracleController.fetchRealBlocks(); // Lấy số block thật hiển thị lên UI
+                    LotteryDemo.renderTickets(); 
                     
                 } catch (err) {
                     console.error("Wallet connection error:", err);
@@ -2502,86 +2453,156 @@
             },
 
             async airdropTestTokens() {
-                if (!this.walletAddress) return;
-                Sys.toast("Minting 1000 TEST SPHINX...", "info");
+                if (!this.walletAddress) return Sys.toast("Connect Phantom Wallet first!", "error");
+                Sys.toast("Minting 50,000 TEST SPHINX...", "info");
                 setTimeout(() => {
-                    Store.user.bals.SPHINX += 1000;
+                    Store.user.bals.SPHINX += 50000;
                     EB.emit('user-update');
-                    OracleController.updateUI();
-                    Sys.toast("Faucet successful!", "success");
+                    LotteryDemo.renderTickets();
+                    Sys.toast("Faucet successful! You got 50,000 SPHINX.", "success");
                 }, 1500);
+            },
+            
+            async executeTx(actionName) {
+                Sys.toast(`Initiating ${actionName}...`, "info");
+                await Utils.sleep(1000);
+                return true;
+            },
+            
+            toggle() {
+                this.connectPhantom();
             }
         };
 
         // ============================================================================
-        // MODULE: ORACLE LOTTERY ENGINE (TESTNET)
+        // MODULE: SPHINX LOTTERY DEMO ENGINE (UI SIMULATION)
         // ============================================================================
-        const OracleController = {
-            roundTotalDeposits: 62335,
-            tokenPriceUSD: 0.001, 
-            
-            async fetchRealBlocks() {
-                if (!Web3Manager.connection) Web3Manager.init();
-                
-                try {
-                    const currentSlot = await Web3Manager.connection.getSlot();
-                    const startBlock = currentSlot - 100000; 
-                    const endBlock = startBlock + 201600; 
-                    
-                    document.getElementById('stat-start-block').innerText = startBlock.toLocaleString();
-                    document.getElementById('stat-end-block').innerText = endBlock.toLocaleString();
-                    document.getElementById('stat-duration-blocks').innerText = (endBlock - startBlock).toLocaleString();
-                    
-                    const startDate = new Date(Date.now() - (100000 * 3000));
-                    const endDate = new Date(Date.now() + (101600 * 3000));
-                    document.getElementById('stat-start-time').innerText = startDate.toUTCString();
-                    document.getElementById('stat-end-time').innerText = endDate.toUTCString();
-                    
-                } catch (error) {
-                    console.error("Lỗi lấy Block:", error);
-                }
-            },
+        const LotteryDemo = {
+            config: { depMulti: 50, holdMulti: 10 },
+            globalTickets: 8942100,
+            userTickets: { dep: 0, hold: 0, total: 0 },
+            snapshot: 0,
 
-            updateUI() {
-                const total = this.roundTotalDeposits;
-                const prize = total * 0.7;
-                const nft = total * 0.2;
-                const ops = total * 0.1;
-
-                const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
-                
-                setVal('fund-total', `${total.toLocaleString()} SPHINX`);
-                setVal('fund-prize', `${prize.toLocaleString()} SPHINX`);
-                setVal('fund-nft', `${nft.toLocaleString()} SPHINX`);
-                setVal('fund-ops', `${ops.toLocaleString()} SPHINX`);
-
-                setVal('fund-total-usd', `$${(total * this.tokenPriceUSD).toFixed(2)}`);
-                setVal('fund-prize-usd', `$${(prize * this.tokenPriceUSD).toFixed(2)}`);
-                setVal('fund-nft-usd', `$${(nft * this.tokenPriceUSD).toFixed(2)}`);
-                setVal('fund-ops-usd', `$${(ops * this.tokenPriceUSD).toFixed(2)}`);
-
-                if (Store.user.address) {
-                    setVal('sol-wallet-balance', Store.user.bals.SPHINX.toLocaleString());
-                }
-            },
-
-            depositTestnet() {
-                const amt = parseFloat(document.getElementById('test-deposit-amt').value);
-                if (isNaN(amt) || amt <= 0) return Sys.toast("Số lượng không hợp lệ", "error");
-                if (Store.user.bals.SPHINX < amt) return Sys.toast("Số dư không đủ. Dùng Faucet nhé!", "error");
-                
-                Store.user.bals.SPHINX -= amt;
-                this.roundTotalDeposits += amt;
-                document.getElementById('test-deposit-amt').value = '';
-                
-                this.updateUI();
-                EB.emit('user-update');
-                Sys.toast("Đã nạp thành công vào Testnet Pool!", "success");
-            },
-            
             init() {
-                this.updateUI();
-                Web3Manager.init(); 
+                this.startTimer();
+                this.startBlockScanner();
+                this.updateSlider();
+            },
+
+            updateSlider() {
+                const val = document.getElementById('demo-autopool-slider').value;
+                const el = document.getElementById('demo-slider-val');
+                if (el) el.innerText = Number(val).toLocaleString();
+            },
+
+            simulateAutoPool() {
+                if (!Store.user.address) return Sys.toast("Please Connect Phantom Wallet first.", "error");
+                
+                const val = Number(document.getElementById('demo-autopool-slider').value);
+                if (val <= 0) return Sys.toast("Set value greater than 0", "error");
+                if (Store.user.bals.SPHINX < val) return Sys.toast("Insufficient SPHINX! Click FAUCET to get test tokens.", "error");
+
+                Store.user.bals.SPHINX -= val;
+                this.snapshot += val;
+
+                this.userTickets.dep += val * this.config.depMulti;
+                this.userTickets.hold += val * this.config.holdMulti * 1; 
+                
+                document.getElementById('demo-warning').classList.add('hidden');
+                Sys.toast("Auto Pool Activated. Tokens locked & Multiplier Secured.", "success");
+                
+                EB.emit('user-update');
+                this.renderTickets();
+            },
+
+            simulateManual() {
+                if (!Store.user.address) return Sys.toast("Please Connect Phantom Wallet first.", "error");
+                
+                const val = Number(document.getElementById('demo-manual-input').value);
+                if (val <= 0) return Sys.toast("Invalid amount", "error");
+                if (Store.user.bals.SPHINX < val) return Sys.toast("Insufficient SPHINX! Click FAUCET to get test tokens.", "error");
+
+                Store.user.bals.SPHINX -= val;
+                this.snapshot += val;
+
+                const timeRatio = 0.6; 
+                this.userTickets.dep += val * this.config.depMulti;
+                this.userTickets.hold += Math.floor(val * this.config.holdMulti * timeRatio);
+                
+                document.getElementById('demo-manual-input').value = '';
+                document.getElementById('demo-warning').classList.add('hidden');
+                Sys.toast("Manual Injection Successful. Partial Hold Multiplier applied.", "info");
+                
+                EB.emit('user-update');
+                this.renderTickets();
+            },
+
+            triggerAntiDump() {
+                if (this.snapshot === 0) return Sys.toast("You haven't deposited anything yet.", "error");
+                
+                this.userTickets.hold = 0; 
+                document.getElementById('demo-warning').classList.remove('hidden');
+                Sys.toast("ANTI-DUMP TRIGGERED! Hold Tickets Burned.", "error");
+                this.renderTickets();
+            },
+
+            renderTickets() {
+                this.userTickets.total = this.userTickets.dep + this.userTickets.hold;
+                
+                const setVal = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerText = val.toLocaleString();
+                };
+                
+                setVal('demo-dep-tickets', this.userTickets.dep);
+                setVal('demo-hold-tickets', this.userTickets.hold);
+                setVal('demo-total-tickets', this.userTickets.total);
+                setVal('demo-snapshot', this.snapshot);
+                
+                // Cập nhật số dư ví
+                const balEl = document.getElementById('lottery-wallet-bal');
+                if (balEl) balEl.innerText = (Store.user.bals.SPHINX || 0).toLocaleString();
+                
+                const totalPool = this.globalTickets + this.userTickets.total;
+                const prob = totalPool > 0 ? (this.userTickets.total / totalPool) * 100 : 0;
+                const probEl = document.getElementById('demo-prob');
+                if (probEl) probEl.innerText = prob.toFixed(4) + "%";
+            },
+
+            startTimer() {
+                setInterval(() => {
+                    const diff = (Date.now() % (1000 * 60 * 60 * 24 * 7)); 
+                    const remain = (1000 * 60 * 60 * 24 * 7) - diff;
+                    
+                    const d = Math.floor(remain / (1000 * 60 * 60 * 24));
+                    const h = Math.floor((remain / (1000 * 60 * 60)) % 24);
+                    const m = Math.floor((remain / 1000 / 60) % 60);
+                    const s = Math.floor((remain / 1000) % 60);
+                    
+                    const timerText = `${d}D ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                    
+                    const hudTimer = document.getElementById('hud-timer');
+                    if (hudTimer) hudTimer.innerText = timerText;
+                }, 1000);
+            },
+
+            startBlockScanner() {
+                const feed = document.getElementById('block-feed');
+                if (!feed) return;
+                let blockNum = 194820300;
+                
+                for(let i=0; i<10; i++) {
+                    const div = document.createElement('div');
+                    div.innerText = `[OK] Indexed Block #${blockNum++} Hash: 0x${Utils.randomHex(16)}`;
+                    feed.appendChild(div);
+                }
+
+                setInterval(() => {
+                    const div = document.createElement('div');
+                    div.innerText = `[OK] Indexed Block #${blockNum++} Hash: 0x${Utils.randomHex(16)}`;
+                    feed.appendChild(div);
+                    if (feed.children.length > 20) feed.removeChild(feed.firstChild);
+                }, 800);
             }
         };
 
@@ -2597,27 +2618,30 @@
         window.Terminal = Terminal;
         window.Sys = Sys;                 
         window.Web3Manager = Web3Manager; 
-        window.OracleController = OracleController; // Export thêm Lottery Engine
+        window.LotteryDemo = LotteryDemo; 
             
-        // Main Boot Process
         window.addEventListener('DOMContentLoaded', () => {
-            console.log("SPHINX V4 INIT (SOCIAL MINING & LOTTERY)");
+            console.log("SPHINX V4 INIT (SOCIAL MINING & HUD LOTTERY)");
             
             initBgCanvas();
             Terminal.init();
             MemeEngine.init();
-            SocialController.startTimers();
-            OracleController.init(); // Khởi động Lottery
+            
+            if (typeof SocialController !== 'undefined') {
+                SocialController.startTimers();
+            }
+            
+            LotteryDemo.init(); 
+            Web3Manager.init(); 
             
             setInterval(() => {
-                // Kịch bản chim mồi (Đã bỏ các thông báo duyệt nhiệm vụ cũ)
                 const events = [
                     { msg: "Swapped 5.5 SOL for SPHINX on Pump.fun", type: "SWAP" },
                     { msg: "Deposited 15,000 SPHINX to Auto Pool", type: "ORACLE" },
                     { msg: "Claimed 14,000 SPHINX Daily Dividend", type: "SYSTEM" },
                     { msg: "Linked X Account Securely", type: "SOCIAL" },
                     { msg: "Reached Rank: GUARDIAN", type: "SOCIAL" },
-                    { msg: "Joined Lottery Round 19", type: "ORACLE" }
+                    { msg: "Joined Lottery Round 01", type: "ORACLE" }
                 ];
                 
                 const randomEvent = events[Math.floor(Math.random() * events.length)];
@@ -2629,7 +2653,7 @@
             const hash = window.location.hash.replace('#', '') || 'home';
             Router.navigate(hash);
             
-            setTimeout(() => Sys.toast("System Boot Complete. Testnet Activated.", "success"), 1000);
+            setTimeout(() => Sys.toast("System Boot Complete. HUD Interface Online.", "success"), 1000);
         });
     </script>
 </body>
